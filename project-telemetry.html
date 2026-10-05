@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Endüstriyel Telemetri Paneli | Proje Detayı - Ahmet Koyuncu</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            dark: {
+              950: '#060709',
+              900: '#0c0e14',
+              850: '#11141d',
+              800: '#171b26',
+            },
+            accent: {
+              cyan: '#00f2fe',
+              blue: '#4facfe',
+              amber: '#f59e0b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(17, 20, 29, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .text-gradient-amber {
+      background: linear-gradient(135deg, #ffffff 20%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @keyframes pulseWave {
+      0% { transform: scaleX(0.98); opacity: 0.7; }
+      50% { transform: scaleX(1.02); opacity: 1; }
+      100% { transform: scaleX(0.98); opacity: 0.7; }
+    }
+    .animate-wave {
+      animation: pulseWave 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-dark-950 text-slate-300 font-sans antialiased min-h-screen selection:bg-amber-500/20 selection:text-amber-300">
+
+  <!-- Header / Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-dark-950/80 border-b border-white/[0.06]">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-xs font-mono font-medium text-slate-300 hover:text-white hover:border-amber-400/50 transition-all group">
+        <i data-lucide="arrow-left" class="w-4 h-4 text-amber-400 group-hover:-translate-x-1 transition-transform"></i>
+        <span>Portfolyoya Dön</span>
+      </a>
+      <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        <span>MPG Endüstriyel Telemetri</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-32 pb-24 px-6 max-w-5xl mx-auto">
+    <!-- Hero / Title -->
+    <div class="mb-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs font-mono text-amber-300 mb-4">
+        <i data-lucide="radio" class="w-3.5 h-3.5"></i>
+        <span>İş Yeri Eğitimi &amp; Gerçek Zamanlı Endüstriyel IoT</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 text-gradient-amber">
+        Endüstriyel Telemetri Paneli
+      </h1>
+      <p class="text-lg text-slate-300 max-w-3xl leading-relaxed">
+        Ağır endüstriyel vinçlerden gelen yüksek frekanslı CAN-bus sensör verilerini C# TCP socket dinleyicileriyle işleyen, SignalR üzerinden sub-50ms gecikmeyle web ve masaüstü panellerine aktaran gerçek zamanlı telemetri platformu.
+      </p>
+    </div>
+
+    <!-- Live Telemetry Simulator HUD -->
+    <div class="glass-card rounded-2xl p-6 sm:p-8 mb-12 border-amber-500/20 relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <i data-lucide="activity" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-semibold text-base font-mono">CAN-BUS v2.0B TELEMETRY STREAM</h3>
+            <p class="text-xs text-slate-400 font-mono">VINÇ KULE ÜNİTESİ #CRANE-901 • PROTOKOL: J1939</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono text-xs flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            LIVE: 32ms
+          </span>
+          <span class="px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs">
+            250 kbps
+          </span>
+        </div>
+      </div>
+
+      <!-- Real-time telemetry indicators -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
+        <div class="p-4 rounded-xl bg-dark-900/80 border border-white/5">
+          <span class="text-[11px] font-mono text-slate-400 block mb-1">HİDROLİK BASINÇ</span>
+          <span class="text-2xl font-bold font-mono text-white" id="m-pressure">314.2</span>
+          <span class="text-xs font-mono text-amber-400 ml-1">BAR</span>
+        </div>
+        <div class="p-4 rounded-xl bg-dark-900/80 border border-white/5">
+          <span class="text-[11px] font-mono text-slate-400 block mb-1">BOM AÇISI</span>
+          <span class="text-2xl font-bold font-mono text-white" id="m-angle">42.8</span>
+          <span class="text-xs font-mono text-cyan-400 ml-1">DERECE</span>
+        </div>
+        <div class="p-4 rounded-xl bg-dark-900/80 border border-white/5">
+          <span class="text-[11px] font-mono text-slate-400 block mb-1">YÜK MİKTARI</span>
+          <span class="text-2xl font-bold font-mono text-white" id="m-load">14.6</span>
+          <span class="text-xs font-mono text-purple-400 ml-1">TON</span>
+        </div>
+        <div class="p-4 rounded-xl bg-dark-900/80 border border-white/5">
+          <span class="text-[11px] font-mono text-slate-400 block mb-1">YAĞ SICAKLIĞI</span>
+          <span class="text-2xl font-bold font-mono text-white" id="m-temp">58.4</span>
+          <span class="text-xs font-mono text-emerald-400 ml-1">°C</span>
+        </div>
+      </div>
+
+      <!-- Oscilloscope Waveform SVG -->
+      <div class="p-4 rounded-xl bg-dark-900/90 border border-white/5 overflow-hidden">
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
+          <span>OSCILLOSCOPE SENSÖR SİNYALİ</span>
+          <span class="text-amber-400">SIGNALR WEB SOCKET BUFFER: 100% OK</span>
+        </div>
+        <svg class="w-full h-20 stroke-amber-400 fill-none animate-wave" viewBox="0 0 800 100" preserveAspectRatio="none">
+          <path d="M 0 50 Q 50 10 100 50 T 200 50 T 300 10 T 400 90 T 500 50 T 600 20 T 700 80 T 800 50" stroke-width="2.5" stroke-linecap="round"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Project Specifications & Architecture -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div class="glass-card rounded-2xl p-7 space-y-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="layers" class="w-5 h-5 text-amber-400"></i>
+          Sistem Mimarisi &amp; Zorluklar
+        </h3>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          Endüstriyel vinçlerin zorlu çalışma koşullarında sensör bağlantıları anlık kopmalara maruz kalabilir. Bu zorluğu çözmek için, TCP soket katmanında hata toleranslı dairesel tampon bellek (circular buffer) ve otomatik yeniden bağlantı mekanizması geliştirilmiştir.
+        </p>
+        <ul class="text-xs font-mono text-slate-400 space-y-2 pt-2">
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> C# TCP Socket dinleyicileri (J1939 CAN Frame Parser)</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> ASP.NET Core SignalR ile gerçek zamanlı broadcast</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> Web tabanlı operatör arayüzü ve acil durum uyarıları</li>
+        </ul>
+      </div>
+
+      <div class="glass-card rounded-2xl p-7 space-y-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="cpu" class="w-5 h-5 text-amber-400"></i>
+          Teknik Yığın (Tech Stack)
+        </h3>
+        <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+          <div class="p-3 rounded-lg bg-dark-900 border border-white/5">
+            <span class="text-amber-400 font-bold block">C# / .NET Core</span>
+            <span class="text-slate-400 text-[11px]">Asenkron arka uç motoru</span>
+          </div>
+          <div class="p-3 rounded-lg bg-dark-900 border border-white/5">
+            <span class="text-amber-400 font-bold block">SignalR</span>
+            <span class="text-slate-400 text-[11px]">WebSockets çift yönlü iletişim</span>
+          </div>
+          <div class="p-3 rounded-lg bg-dark-900 border border-white/5">
+            <span class="text-amber-400 font-bold block">CAN-Bus / J1939</span>
+            <span class="text-slate-400 text-[11px]">Endüstriyel sensör protokolü</span>
+          </div>
+          <div class="p-3 rounded-lg bg-dark-900 border border-white/5">
+            <span class="text-amber-400 font-bold block">WPF &amp; Web Dash</span>
+            <span class="text-slate-400 text-[11px]">Operatör telemetri görselleme</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back button CTA -->
+    <div class="text-center pt-8 border-t border-white/10">
+      <a href="index.html#projects" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-amber-500 text-slate-950 font-semibold text-sm hover:bg-amber-400 transition-all">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Diğer Projeleri İncele</span>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+
+    // Simulated live sensor jitter
+    setInterval(() => {
+      const p = (310 + Math.random() * 8).toFixed(1);
+      const a = (42 + Math.random() * 1.5).toFixed(1);
+      const l = (14.2 + Math.random() * 0.8).toFixed(1);
+      const t = (58 + Math.random() * 1.2).toFixed(1);
+      document.getElementById('m-pressure').textContent = p;
+      document.getElementById('m-angle').textContent = a;
+      document.getElementById('m-load').textContent = l;
+      document.getElementById('m-temp').textContent = t;
+    }, 1500);
+  </script>
+</body>
+</html>

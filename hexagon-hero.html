@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hexagon Honeycomb Reveal Hero | Ahmet Koyuncu</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            dark: {
+              950: '#060709',
+              900: '#0c0e14',
+              850: '#11141d',
+              800: '#171b26',
+            },
+            accent: {
+              cyan: '#00f2fe',
+              blue: '#4facfe',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #060709; }
+    ::-webkit-scrollbar-thumb { background: #222838; border-radius: 4px; }
+
+    /* Glass card effect */
+    .glass-card {
+      background: rgba(17, 20, 29, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Ambient glow button */
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
+    }
+    .glow-cyan:hover {
+      box-shadow: 0 0 35px rgba(0, 242, 254, 0.55);
+    }
+
+    /* Floating UI Animations */
+    @keyframes subtleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-float {
+      animation: subtleFloat 4.5s ease-in-out infinite;
+    }
+
+    /* Live Cursor Marker (Optional visual aid) */
+    #cursor-light {
+      pointer-events: none;
+      position: fixed;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 242, 254, 0.12) 0%, rgba(79, 70, 229, 0.04) 40%, transparent 70%);
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-dark-950 text-slate-300 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden min-h-screen">
+
+  <!-- ========================================================================= -->
+  <!-- 1. NAVIGATION BAR -->
+  <!-- ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-dark-950/75 border-b border-white/[0.06] transition-all">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-mono font-bold text-lg shadow-[0_0_15px_rgba(0,242,254,0.15)] group-hover:border-cyan-400 transition-all">
+          AK
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-white text-base tracking-tight group-hover:text-cyan-400 transition-colors">Ahmet Koyuncu</span>
+          <span class="text-xs text-slate-400 font-mono flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Hexagon Reveal Hero
+          </span>
+        </div>
+      </a>
+
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-3">
+        <!-- Live Customizer Toggle Button -->
+        <button id="toggle-panel-btn" onclick="toggleControlPanel()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-xs font-mono font-medium text-cyan-300 hover:text-white hover:border-cyan-400/50 transition-all">
+          <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+          <span>Ayarlar & Görsel Seçimi</span>
+        </button>
+
+        <a href="index.html" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs font-mono text-slate-300 hover:text-white hover:border-white/20 transition-all">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span>Ana Portfolyoya Dön</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. HERO SECTION WITH HEXAGON REVEAL ENGINE -->
+  <!-- ========================================================================= -->
+  <section id="hero-section" class="relative w-full min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    
+    <!-- KATMAN 1 (ALT KATMAN): YÜKSEK ÇÖZÜNÜRLÜKLÜ GÖRSEL (REVEAL TARGET) -->
+    <div id="hero-bg-container" class="absolute inset-0 w-full h-full z-0 overflow-hidden">
+      <!-- Arka Plan Görseli -->
+      <img id="hero-bg-image" 
+           src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=85" 
+           alt="Interactive Portfolio Background" 
+           class="w-full h-full object-cover object-center select-none scale-105 transition-transform duration-1000" />
+      
+      <!-- İnce Karartma Örtüsü (Yazıların ve kontrastın okunabilirliğini korumak için) -->
+      <div id="hero-bg-dimmer" class="absolute inset-0 bg-dark-950/40 pointer-events-none transition-colors"></div>
+    </div>
+
+    <!-- KATMAN 2 (ORTA KATMAN): INTERAKTIF CANVAS PETEK MASKESİ -->
+    <canvas id="hexagon-canvas" class="absolute inset-0 w-full h-full z-10 pointer-events-none block"></canvas>
+
+    <!-- Farenin Altındaki İnce Ortam Işıması -->
+    <div id="cursor-light"></div>
+
+    <!-- KATMAN 3 (ÜST KATMAN): METİNLER, BUTONLAR VE İÇERİK (FOREGROUND UI) -->
+    <!-- pointer-events-none: Farenin serbestçe canvas'a geçmesini sağlar; butonlar ve linkler pointer-events-auto ile tıklanabilir kalır -->
+    <div class="relative z-20 max-w-4xl mx-auto px-6 py-16 text-center flex flex-col items-center pointer-events-none">
+      
+      <!-- Durum Rozeti -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-dark-950/80 border border-cyan-500/30 text-xs font-mono text-cyan-300 mb-8 backdrop-blur-md shadow-inner pointer-events-auto animate-float">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+        </span>
+        <span>İmleci Gezdirerek Görseli Keşfedin</span>
+      </div>
+
+      <!-- Ana Başlık -->
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1] select-none drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">
+        Fiziksel Sistemler &amp; <br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400">
+          Akıllı Mimariler
+        </span>
+      </h1>
+
+      <!-- Alt Başlık / Bio -->
+      <p class="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed mb-10 font-normal select-none drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+        Bilgisayar Mühendisliği, gerçek zamanlı endüstriyel telemetri, yapay zeka destekli bilgisayarlı görü ve yüksek performanslı yazılım mühendisliği çözümleri.
+      </p>
+
+      <!-- Aksiyon Butonları -->
+      <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto pointer-events-auto">
+        <a href="#proje-detay" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-cyan-400 text-slate-950 font-semibold text-sm tracking-wide hover:bg-cyan-300 glow-cyan transition-all group">
+          <span>Projeleri Keşfet</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+        </a>
+        <button onclick="toggleControlPanel()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl glass-card text-white font-medium text-sm hover:border-cyan-400/50 hover:bg-white/[0.08] transition-all">
+          <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+          <span>Efekti Özelleştir</span>
+        </button>
+      </div>
+
+      <!-- Bilgi İpucu Kutusu -->
+      <div class="mt-14 inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-dark-900/80 border border-white/10 text-xs text-slate-400 font-mono backdrop-blur-md pointer-events-auto">
+        <i data-lucide="mouse-pointer" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+        <span>İmleci veya parmağınızı hareket ettirin — Altıgen petekler dinamik olarak şeffaflaşıp küçülür.</span>
+      </div>
+
+    </div>
+
+    <!-- Alt Kaydırma Oku -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-slate-500 flex flex-col items-center gap-1.5 pointer-events-none animate-bounce">
+      <span class="text-[10px] font-mono tracking-widest uppercase">Keşfet</span>
+      <i data-lucide="chevron-down" class="w-4 h-4"></i>
+    </div>
+  </section>
+
+
+  <!-- ========================================================================= -->
+  <!-- 3. CANLI AYAR PANELİ (DRAWER / MODAL) -->
+  <!-- ========================================================================= -->
+  <div id="control-panel" class="fixed top-24 right-6 z-50 w-88 max-w-[calc(100vw-3rem)] glass-card rounded-2xl p-6 shadow-2xl transition-all duration-300 transform translate-x-[120%] opacity-0 border border-cyan-500/30">
+    <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+      <div class="flex items-center gap-2 text-white font-semibold text-sm">
+        <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+        <span>Petek Maske Ayarları</span>
+      </div>
+      <button onclick="toggleControlPanel()" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <div class="space-y-4 text-xs font-mono">
+      <!-- 1. Görsel Seçimi -->
+      <div>
+        <label class="block text-slate-300 mb-2 uppercase tracking-wider text-[11px]">Arka Plan Görseli</label>
+        <div class="grid grid-cols-3 gap-2 mb-2">
+          <button onclick="setPresetImage('workstation')" class="px-2 py-1.5 rounded-lg bg-dark-900 border border-white/10 hover:border-cyan-400/50 text-slate-300 hover:text-cyan-300 transition-all truncate text-center">Çalışma Masası</button>
+          <button onclick="setPresetImage('matrix')" class="px-2 py-1.5 rounded-lg bg-dark-900 border border-white/10 hover:border-cyan-400/50 text-slate-300 hover:text-cyan-300 transition-all truncate text-center">Kod Ekranı</button>
+          <button onclick="setPresetImage('cyberpunk')" class="px-2 py-1.5 rounded-lg bg-dark-900 border border-white/10 hover:border-cyan-400/50 text-slate-300 hover:text-cyan-300 transition-all truncate text-center">Siber Şehir</button>
+        </div>
+        <input type="text" id="cfg-bg-url" placeholder="Özel Görsel URL'si yapıştırın..." 
+               class="w-full px-3 py-2 rounded-lg bg-dark-900 border border-white/10 text-white placeholder-slate-500 text-[11px] focus:outline-none focus:border-cyan-400 transition-all" />
+      </div>
+
+      <!-- 2. Petek Boyutu Slider -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-slate-300">Petek Boyutu (Radius)</span>
+          <span id="val-hex-size" class="text-cyan-400 font-bold">38px</span>
+        </div>
+        <input type="range" id="cfg-hex-size" min="20" max="75" value="38" class="w-full accent-cyan-400 cursor-pointer" />
+      </div>
+
+      <!-- 3. Fare Etki Alanı Slider -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-slate-300">Fare Etki Yarıçapı</span>
+          <span id="val-mouse-radius" class="text-cyan-400 font-bold">180px</span>
+        </div>
+        <input type="range" id="cfg-mouse-radius" min="80" max="360" value="180" class="w-full accent-cyan-400 cursor-pointer" />
+      </div>
+
+      <!-- 4. Animasyon / Lerp Hızı Slider -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-slate-300">Animasyon Hızı (Lerp)</span>
+          <span id="val-lerp-speed" class="text-cyan-400 font-bold">0.08</span>
+        </div>
+        <input type="range" id="cfg-lerp-speed" min="0.02" max="0.25" step="0.01" value="0.08" class="w-full accent-cyan-400 cursor-pointer" />
+      </div>
+
+      <!-- 5. Efekt Modu Seçimi -->
+      <div>
+        <label class="block text-slate-300 mb-2 uppercase tracking-wider text-[11px]">Geçiş Modu</label>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button id="mode-both" onclick="setRevealMode('both')" class="px-2 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-center font-bold">Her İkisi</button>
+          <button id="mode-opacity" onclick="setRevealMode('opacity')" class="px-2 py-1.5 rounded-lg bg-dark-900 text-slate-400 border border-white/10 hover:text-white text-center">Yalnız Şeffaflık</button>
+          <button id="mode-scale" onclick="setRevealMode('scale')" class="px-2 py-1.5 rounded-lg bg-dark-900 text-slate-400 border border-white/10 hover:text-white text-center">Yalnız Küçülme</button>
+        </div>
+      </div>
+
+      <!-- 6. Tel Kafes (Wireframe) Kontur Rengi -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-slate-300">Tel Kafes Opaklığı</span>
+          <span id="val-stroke-alpha" class="text-cyan-400 font-bold">0.22</span>
+        </div>
+        <input type="range" id="cfg-stroke-alpha" min="0.0" max="0.8" step="0.05" value="0.22" class="w-full accent-cyan-400 cursor-pointer" />
+      </div>
+
+      <!-- Reset & Varsayılana Dön -->
+      <div class="pt-2 border-t border-white/10 flex gap-2">
+        <button onclick="resetDefaults()" class="w-full py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 text-center border border-white/10 transition-all">
+          Varsayılana Sıfırla
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- 4. ENTEGRASYON REHBERİ BÖLÜMÜ (AÇIKLAMA VE KULLANIM) -->
+  <!-- ========================================================================= -->
+  <section id="proje-detay" class="py-24 px-6 relative z-20 bg-dark-950/95 border-t border-white/[0.08]">
+    <div class="max-w-5xl mx-auto">
+      
+      <div class="text-center mb-16">
+        <span class="text-cyan-400 font-mono text-xs uppercase tracking-widest">Temiz Mimari &amp; Performans</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mt-2 tracking-tight">Kendi Projenize Nasıl Entegre Edersiniz?</h2>
+        <p class="text-slate-400 text-sm mt-3 max-w-xl mx-auto">
+          Bu bileşen tamamen harici kütüphanesizdir (Zero Dependencies). HTML5 Canvas ve Vanilla JS ile 60 FPS akıcılıkta çalışır.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="glass-card rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-4 font-mono font-bold">01</div>
+          <h3 class="text-white font-semibold text-base mb-2">Katmanlı Yapı</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Arka planda yüksek çözünürlüklü görsel (<code class="text-cyan-300">img</code>), üzerinde şeffaflaşan Canvas petekleri ve en üstte tıklanabilir butonlarınız yer alır.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-4 font-mono font-bold">02</div>
+          <h3 class="text-white font-semibold text-base mb-2">Matematiksel Honeycomb</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            Nokta uçlu (pointy-topped) altıgen geometrisi ile ekran pürüzsüz biçimde döşenir. Kenar sızıntılarını önlemek için sub-pixel mikron ölçeklemesi uygulanmıştır.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-4 font-mono font-bold">03</div>
+          <h3 class="text-white font-semibold text-base mb-2">Mobil Dokunma Desteği</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">
+            <code class="text-cyan-300">touchstart</code>, <code class="text-cyan-300">touchmove</code> ve <code class="text-cyan-300">touchend</code> olayları farenin olmadığı dokunmatik ekranlarda aynı yumuşak geçişi sağlar.
+          </p>
+        </div>
+      </div>
+
+      <!-- Kod Snippet Kutusu -->
+      <div class="glass-card rounded-2xl p-6 overflow-hidden">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+          <span class="text-xs font-mono text-cyan-300 font-semibold flex items-center gap-2">
+            <i data-lucide="code" class="w-4 h-4"></i>
+            Yapılandırma Değişkenleri (CONFIG Objesi)
+          </span>
+          <span class="text-xs font-mono text-slate-500">Vanilla JavaScript</span>
+        </div>
+        <pre class="bg-dark-900 p-4 rounded-xl text-xs font-mono text-slate-300 overflow-x-auto leading-relaxed"><code>const CONFIG = {
+  // 1. Arka planda ortaya çıkacak görselin yolu / URL'si
+  bgImage: 'projenizin-resmi.jpg',
+
+  // 2. Petek altıgenlerin yarıçapı (piksel)
+  hexRadius: 38,
+
+  // 3. Farenin etki alanı yarıçapı (piksel)
+  mouseRadius: 180,
+
+  // 4. Yumuşak sönümleme ve geri dönüş hızı (Lerp factor)
+  lerpSpeed: 0.08,
+
+  // 5. Efekt modu: 'both' (şeffaflaşma + küçülme), 'opacity', veya 'scale'
+  revealMode: 'both',
+
+  // 6. Üst katman petek dolgu rengi (Sayfa arka planı ile birebir)
+  hexFillColor: '#060709',
+
+  // 7. Tel kafes (wireframe) kontur rengi ve opaklığı
+  hexStrokeColor: '#00f2fe',
+  hexStrokeAlpha: 0.22,
+  hexStrokeWidth: 1.0,
+
+  // 8. Fareye en yakın peteklerde aktif neon ışıma
+  activeGlowColor: '#00f2fe',
+  activeGlowAlpha: 0.65
+};</code></pre>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 5. FOOTER -->
+  <!-- ========================================================================= -->
+  <footer class="border-t border-white/[0.06] bg-dark-950 py-10 px-6 text-center text-xs font-mono text-slate-500">
+    <p>© 2026 Ahmet Koyuncu. Hexagon Honeycomb Reveal Engine — Pure HTML5 Canvas &amp; Vanilla JS.</p>
+  </footer>
+
+
+  <!-- ========================================================================= -->
+  <!-- 6. HEXAGON REVEAL ENGINE — VANILLA JAVASCRIPT KODLARI -->
+  <!-- ========================================================================= -->
+  <script>
+    // =========================================================================
+    // GLOBAL AYARLAR (CONFIG)
+    // =========================================================================
+    const CONFIG = {
+      // 1. Arka plandaki yüksek çözünürlüklü görsel
+      bgImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=85',
+      
+      // 2. Altıgen petek boyutu (yarıçap piksel)
+      hexRadius: 38,
+      
+      // 3. Farenin etki yarıçapı (piksel)
+      mouseRadius: 180,
+      
+      // 4. Yumuşak geçiş / lerp hızı (0.02 - 0.25 arası)
+      lerpSpeed: 0.08,
+      
+      // 5. Geçiş modu: 'both' (şeffaflık + küçülme), 'opacity', 'scale'
+      revealMode: 'both',
+      
+      // 6. Üst katman petek dolgu rengi (Sitenin arka planı ile aynı: #060709)
+      hexFillColor: '#060709',
+      
+      // 7. Tel kafes (wireframe) kontur rengi
+      hexStrokeColor: '#00f2fe',
+      hexStrokeAlpha: 0.22,
+      hexStrokeWidth: 1.0,
+      
+      // 8. İmleç yakınındaki peteklerde neon ışıma rengi
+      activeGlowColor: '#00f2fe',
+      activeGlowAlpha: 0.65
+    };
+
+    // Örnek preset görseller
+    const PRESET_IMAGES = {
+      workstation: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=85',
+      matrix: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=2400&q=85',
+      cyberpunk: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=2400&q=85'
+    };
+
+    // =========================================================================
+    // CANVAS & ETKİLEŞİM YÖNETİCİSİ
+    // =========================================================================
+    const canvas = document.getElementById('hexagon-canvas');
+    const ctx = canvas.getContext('2d');
+    const heroSection = document.getElementById('hero-section');
+    const cursorLight = document.getElementById('cursor-light');
+    const bgImageEl = document.getElementById('hero-bg-image');
+
+    let hexagons = [];
+    let dpr = window.devicePixelRatio || 1;
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+
+    // Fare konumu ve akıcı takip (mouse lerping)
+    const mouse = {
+      x: -9999,
+      y: -9999,
+      targetX: -9999,
+      targetY: -9999,
+      isActive: false
+    };
+
+    // =========================================================================
+    // 1. PETEK NESNESİ (HEXAGON CLASS)
+    // =========================================================================
+    class Hexagon {
+      constructor(cx, cy, radius) {
+        this.cx = cx;
+        this.cy = cy;
+        this.radius = radius;
+        
+        // Animasyon durum değişkenleri
+        this.currentOpacity = 1.0;
+        this.targetOpacity = 1.0;
+        
+        this.currentScale = 1.0;
+        this.targetScale = 1.0;
+
+        this.glowIntensity = 0.0;
+      }
+
+      update() {
+        // Fareye olan mesafeyi hesapla
+        const dx = mouse.x - this.cx;
+        const dy = mouse.y - this.cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (mouse.isActive && dist < CONFIG.mouseRadius) {
+          // 0 (merkez) ile 1 (çevre) arasında normalize et
+          const normDist = dist / CONFIG.mouseRadius;
+          // Yumuşak eğri (ease out / feathering)
+          const factor = Math.pow(normDist, 1.35);
+
+          // Hedef Opaklık: Merkezde 0.0, çevrede 1.0
+          if (CONFIG.revealMode === 'opacity' || CONFIG.revealMode === 'both') {
+            this.targetOpacity = Math.max(0, factor);
+          } else {
+            this.targetOpacity = 1.0;
+          }
+
+          // Hedef Boyut: Merkezde 0.2'ye küçülür, çevrede 1.0
+          if (CONFIG.revealMode === 'scale' || CONFIG.revealMode === 'both') {
+            this.targetScale = 0.2 + (0.8 * factor);
+          } else {
+            this.targetScale = 1.0;
+          }
+
+          // Çevredeki petekler için neon ışıma
+          this.glowIntensity = (1.0 - normDist) * CONFIG.activeGlowAlpha;
+
+        } else {
+          // Fare uzaktaysa tamamen kapat ve eski boyutuna dön
+          this.targetOpacity = 1.0;
+          this.targetScale = 1.0;
+          this.glowIntensity = 0.0;
+        }
+
+        // Yumuşak geçiş (Lerp - Linear Interpolation)
+        this.currentOpacity += (this.targetOpacity - this.currentOpacity) * CONFIG.lerpSpeed;
+        this.currentScale += (this.targetScale - this.currentScale) * CONFIG.lerpSpeed;
+      }
+
+      draw(context) {
+        // Eğer tamamen şeffafsa ve küçülmüşse çizimi atla (performans kazancı)
+        if (this.currentOpacity < 0.005 && this.currentScale < 0.25) return;
+
+        // Nokta uçlu (pointy-topped) altıgen çizimi
+        // Peteklerin arasında float sub-pixel beyaz çizgi/boşluk kalmaması için tam örtüşme (overlap) payı:
+        const drawRadius = (this.radius * this.currentScale) + (this.currentScale >= 0.98 ? 0.65 : 0);
+
+        context.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 6) + (i * Math.PI / 3);
+          const vx = this.cx + drawRadius * Math.cos(angle);
+          const vy = this.cy + drawRadius * Math.sin(angle);
+          if (i === 0) {
+            context.moveTo(vx, vy);
+          } else {
+            context.lineTo(vx, vy);
+          }
+        }
+        context.closePath();
+
+        // 1. Dolgu (Üst katman örtüsü - alt görseli gizleyen renk)
+        if (this.currentOpacity > 0.005) {
+          context.save();
+          context.globalAlpha = Math.min(1.0, Math.max(0, this.currentOpacity));
+          context.fillStyle = CONFIG.hexFillColor;
+          context.fill();
+          context.restore();
+        }
+
+        // 2. Tel Kafes (Wireframe Kenarlık)
+        context.save();
+        if (this.glowIntensity > 0.05) {
+          // Fare yakınındaysa neon parıltı rengi
+          context.strokeStyle = CONFIG.activeGlowColor;
+          context.globalAlpha = Math.min(1.0, this.glowIntensity + 0.15);
+          context.lineWidth = CONFIG.hexStrokeWidth * 1.5;
+        } else {
+          // Normal tel kafes kenarlık rengi
+          context.strokeStyle = CONFIG.hexStrokeColor;
+          context.globalAlpha = Math.min(1.0, this.currentOpacity * CONFIG.hexStrokeAlpha);
+          context.lineWidth = CONFIG.hexStrokeWidth;
+        }
+        context.stroke();
+        context.restore();
+      }
+    }
+
+    // =========================================================================
+    // 2. PETEK GRIDİNİ OLUŞTURMA (POINTY-TOPPED HONEYCOMB TILING)
+    // =========================================================================
+    function buildHexagonGrid() {
+      hexagons = [];
+      const R = CONFIG.hexRadius;
+      
+      // Nokta uçlu altıgen yatay ve dikey aralık matematiği
+      const horizSpacing = Math.sqrt(3) * R;
+      const vertSpacing = 1.5 * R;
+
+      // Ekran dışına taşacak şekilde tampon hücreler (tam kapsama)
+      const cols = Math.ceil(canvasWidth / horizSpacing) + 2;
+      const rows = Math.ceil(canvasHeight / vertSpacing) + 2;
+
+      for (let r = -1; r < rows; r++) {
+        const rowOffsetY = r * vertSpacing;
+        // Tek sayılı satırlar yarım adım sağa kayar
+        const isOddRow = (Math.abs(r) % 2 === 1);
+        const rowOffsetX = isOddRow ? (horizSpacing / 2) : 0;
+
+        for (let c = -1; c < cols; c++) {
+          const colX = (c * horizSpacing) + rowOffsetX;
+          hexagons.push(new Hexagon(colX, rowOffsetY, R));
+        }
+      }
+    }
+
+    // =========================================================================
+    // 3. CANVAS YENİDEN BOYUTLANDIRMA (RESPONSIVE & RETINA DPI DESTEĞİ)
+    // =========================================================================
+    function resizeCanvas() {
+      const rect = heroSection.getBoundingClientRect();
+      canvasWidth = rect.width;
+      canvasHeight = rect.height;
+
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = canvasWidth * dpr;
+      canvas.height = canvasHeight * dpr;
+      canvas.style.width = `${canvasWidth}px`;
+      canvas.style.height = `${canvasHeight}px`;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+
+      buildHexagonGrid();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    // =========================================================================
+    // 4. FARE VE MOBİL DOKUNMA ETKİLEŞİMİ (MOUSE & TOUCH HANDLERS)
+    // =========================================================================
+    function updateInteractionCoords(clientX, clientY) {
+      const rect = heroSection.getBoundingClientRect();
+      mouse.targetX = clientX - rect.left;
+      mouse.targetY = clientY - rect.top;
+      mouse.isActive = true;
+
+      if (cursorLight) {
+        cursorLight.style.left = `${clientX}px`;
+        cursorLight.style.top = `${clientY}px`;
+        cursorLight.style.opacity = '1';
+      }
+    }
+
+    // Fare Hareketi
+    window.addEventListener('mousemove', (e) => {
+      updateInteractionCoords(e.clientX, e.clientY);
+    });
+
+    // Fare Ekrandan Çıktığında Petekleri Geri Kapat
+    document.addEventListener('mouseleave', () => {
+      mouse.isActive = false;
+      mouse.targetX = -9999;
+      mouse.targetY = -9999;
+      if (cursorLight) cursorLight.style.opacity = '0';
+    });
+
+    // Mobil Dokunmatik Olayları (Touchstart, Touchmove, Touchend)
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        updateInteractionCoords(touch.clientX, touch.clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        updateInteractionCoords(touch.clientX, touch.clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      // Dokunma bittiğinde petekler yumuşakça eski haline döner
+      mouse.isActive = false;
+      mouse.targetX = -9999;
+      mouse.targetY = -9999;
+      if (cursorLight) cursorLight.style.opacity = '0';
+    });
+
+    window.addEventListener('touchcancel', () => {
+      mouse.isActive = false;
+      mouse.targetX = -9999;
+      mouse.targetY = -9999;
+      if (cursorLight) cursorLight.style.opacity = '0';
+    });
+
+    // =========================================================================
+    // 5. ANA ANİMASYON DÖNGÜSÜ (60 FPS REQUEST ANIMATION FRAME)
+    // =========================================================================
+    function animate() {
+      // Farenin konumunu pürüzsüzleştir (Inertia lerp)
+      mouse.x += (mouse.targetX - mouse.x) * 0.22;
+      mouse.y += (mouse.targetY - mouse.y) * 0.22;
+
+      // Canvas'ı temizle
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      // Tüm altıgenleri güncelle ve çiz
+      for (let i = 0; i < hexagons.length; i++) {
+        const hex = hexagons[i];
+        hex.update();
+        hex.draw(ctx);
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // =========================================================================
+    // 6. CANLI AYAR PANELİ VE KULLANICI ARAYÜZÜ KONTROLLERİ
+    // =========================================================================
+    let isPanelOpen = false;
+
+    function toggleControlPanel() {
+      const panel = document.getElementById('control-panel');
+      isPanelOpen = !isPanelOpen;
+      if (isPanelOpen) {
+        panel.classList.remove('translate-x-[120%]', 'opacity-0');
+        panel.classList.add('translate-x-0', 'opacity-100');
+      } else {
+        panel.classList.add('translate-x-[120%]', 'opacity-0');
+        panel.classList.remove('translate-x-0', 'opacity-100');
+      }
+    }
+
+    function setPresetImage(key) {
+      if (PRESET_IMAGES[key]) {
+        CONFIG.bgImage = PRESET_IMAGES[key];
+        bgImageEl.src = CONFIG.bgImage;
+        document.getElementById('cfg-bg-url').value = CONFIG.bgImage;
+      }
+    }
+
+    function setRevealMode(mode) {
+      CONFIG.revealMode = mode;
+      
+      const btnBoth = document.getElementById('mode-both');
+      const btnOp = document.getElementById('mode-opacity');
+      const btnScale = document.getElementById('mode-scale');
+      
+      const activeCls = 'px-2 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-center font-bold';
+      const inactiveCls = 'px-2 py-1.5 rounded-lg bg-dark-900 text-slate-400 border border-white/10 hover:text-white text-center';
+
+      btnBoth.className = (mode === 'both') ? activeCls : inactiveCls;
+      btnOp.className = (mode === 'opacity') ? activeCls : inactiveCls;
+      btnScale.className = (mode === 'scale') ? activeCls : inactiveCls;
+    }
+
+    function resetDefaults() {
+      CONFIG.hexRadius = 38;
+      CONFIG.mouseRadius = 180;
+      CONFIG.lerpSpeed = 0.08;
+      CONFIG.revealMode = 'both';
+      CONFIG.hexStrokeAlpha = 0.22;
+      setPresetImage('workstation');
+
+      document.getElementById('cfg-hex-size').value = 38;
+      document.getElementById('val-hex-size').textContent = '38px';
+      document.getElementById('cfg-mouse-radius').value = 180;
+      document.getElementById('val-mouse-radius').textContent = '180px';
+      document.getElementById('cfg-lerp-speed').value = 0.08;
+      document.getElementById('val-lerp-speed').textContent = '0.08';
+      document.getElementById('cfg-stroke-alpha').value = 0.22;
+      document.getElementById('val-stroke-alpha').textContent = '0.22';
+
+      setRevealMode('both');
+      resizeCanvas();
+    }
+
+    // Slider Event Listeners
+    document.getElementById('cfg-hex-size').addEventListener('input', (e) => {
+      CONFIG.hexRadius = parseInt(e.target.value);
+      document.getElementById('val-hex-size').textContent = `${CONFIG.hexRadius}px`;
+      buildHexagonGrid();
+    });
+
+    document.getElementById('cfg-mouse-radius').addEventListener('input', (e) => {
+      CONFIG.mouseRadius = parseInt(e.target.value);
+      document.getElementById('val-mouse-radius').textContent = `${CONFIG.mouseRadius}px`;
+    });
+
+    document.getElementById('cfg-lerp-speed').addEventListener('input', (e) => {
+      CONFIG.lerpSpeed = parseFloat(e.target.value);
+      document.getElementById('val-lerp-speed').textContent = CONFIG.lerpSpeed.toFixed(2);
+    });
+
+    document.getElementById('cfg-stroke-alpha').addEventListener('input', (e) => {
+      CONFIG.hexStrokeAlpha = parseFloat(e.target.value);
+      document.getElementById('val-stroke-alpha').textContent = CONFIG.hexStrokeAlpha.toFixed(2);
+    });
+
+    document.getElementById('cfg-bg-url').addEventListener('change', (e) => {
+      const url = e.target.value.trim();
+      if (url) {
+        CONFIG.bgImage = url;
+        bgImageEl.src = url;
+      }
+    });
+
+    // =========================================================================
+    // 7. BAŞLATICI (INITIALIZATION)
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('cfg-bg-url').value = CONFIG.bgImage;
+      resizeCanvas();
+      animate();
+    });
+  </script>
+</body>
+</html>

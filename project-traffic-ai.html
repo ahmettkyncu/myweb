@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yapay Zeka Destekli Trafik İhlali Tespiti & Plaka Tanıma Sistemi | Ahmet Koyuncu</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            pixel: ['"Press Start 2P"', 'monospace'],
+          },
+          colors: {
+            dark: {
+              950: '#060709',
+              900: '#0c0e14',
+              850: '#11141d',
+              800: '#171b26',
+            },
+            vision: {
+              emerald: '#10b981',
+              cyan: '#00f2fe',
+              rose: '#f43f5e',
+              amber: '#f59e0b',
+              blue: '#3b82f6',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(17, 20, 29, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .text-gradient-emerald {
+      background: linear-gradient(135deg, #ffffff 15%, #10b981 60%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .crt-scanlines {
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+      background-size: 100% 3px, 6px 100%;
+    }
+    @keyframes camScan {
+      0% { top: 0%; opacity: 0.8; }
+      50% { opacity: 0.3; }
+      100% { top: 97%; opacity: 0.8; }
+    }
+    .animate-cam-scan {
+      animation: camScan 3s ease-in-out infinite alternate;
+    }
+    @keyframes pulseTarget {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.04); opacity: 0.75; }
+    }
+    .animate-target-pulse {
+      animation: pulseTarget 1.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-dark-950 text-slate-300 font-sans antialiased min-h-screen selection:bg-emerald-500/20 selection:text-emerald-300">
+
+  <!-- ========================================================================= -->
+  <!-- HEADER & NAVIGATION -->
+  <!-- ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-dark-950/85 border-b border-white/[0.06]">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 px-3.5 py-2 rounded-xl glass-card text-xs font-mono font-medium text-slate-300 hover:text-white hover:border-emerald-400/50 transition-all group">
+        <i data-lucide="arrow-left" class="w-4 h-4 text-emerald-400 group-hover:-translate-x-1 transition-transform"></i>
+        <span>Portfolyoya Dön</span>
+      </a>
+      <div class="flex items-center gap-3 text-xs font-mono">
+        <a href="https://github.com/ahmettkyncu/crosswalk_violation"flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-dark-900 border border-white/10 hover:border-emerald-400/50 text-slate-300 hover:text-white transition-all shadow-sm group">
+          <i data-lucide="github" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+          <span class="font-bold">GitHub Repo</span>
+        </a>
+        <div class="flex items-center gap-2 text-slate-400 pl-2 border-l border-white/10">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>5x YOLOv8 + Shapely</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-32 pb-24 px-6 max-w-6xl mx-auto">
+    <!-- ========================================================================= -->
+    <!-- HERO / TITLE SECTION -->
+    <!-- ========================================================================= -->
+    <div class="mb-12">
+      <div class="flex flex-wrap items-center gap-2.5 mb-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-300">
+          <i data-lucide="scan" class="w-3.5 h-3.5"></i>
+          <span>5x Modüler YOLOv8 Mimarisi</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-xs font-mono text-cyan-300">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span>Shapely Geometrik Alan İhlal Analizi</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs font-mono text-amber-300">
+          <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+          <span>EasyOCR &amp; Konvolüsyon Keskinleştirme</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-xs font-mono text-blue-300">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>%94.5 mAP@50 • 24 FPS Gerçek Zamanlı</span>
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3 text-gradient-emerald">
+        Yapay Zeka Destekli Trafik İhlali Tespiti
+      </h1>
+      <h2 class="text-base sm:text-lg font-mono text-emerald-400 font-semibold mb-4 tracking-wide">
+        DERİN ÖĞRENME TABANLI GERÇEK ZAMANLI YAYA GEÇİDİ İHLAL TESPİT VE PLAKA TANIMA SİSTEMİ
+      </h2>
+      <p class="text-sm sm:text-base text-slate-300 max-w-4xl leading-relaxed mb-6">
+        Şehir içi trafikte yaya güvenliğini artırmak amacıyla; Roboflow üzerinde hazırlanan 7.000+ görüntülük 5 özelleştirilmiş YOLOv8 modeli ile yaya, araç, trafik ışığı, yaya yolu ve plaka tespitini gerçekleştiren; Shapely kütüphanesiyle geometrik güvenli alan kesişimlerini analiz ederek yayaya yol vermeyen araçları anında saptayan ve 5 aşamalı OCR görüntü işleme hattıyla plakayı metne dönüştürerek REST API üzerinden merkezi sunucuya ileten uçtan uca akıllı denetim sistemi.
+      </p>
+
+      <!-- Quick Action Badges & CTAs -->
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="#simulator" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-dark-950 font-bold text-xs font-mono hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all">
+          <i data-lucide="gamepad-2" class="w-4 h-4"></i>
+          <span> Trafik Kamerası Simülatörünü Oyna</span>
+        </a>
+        <a href="#academic-report" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl glass-card text-slate-300 hover:text-white border-white/10 hover:border-emerald-400/40 text-xs font-mono transition-all">
+          <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i>
+          <span>Detaylı Akademik Rapor &amp; Mimari</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- INTERACTIVE MINI-GAME: AKILLI TRAFİK KAMERASI (CAM-04 ENFORCEMENT SIM) -->
+    <!-- ========================================================================= -->
+    <div id="simulator" class="glass-card rounded-3xl p-6 sm:p-8 mb-16 border-emerald-500/30 relative overflow-hidden shadow-2xl">
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/10">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+              <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+               İNTERAKTİF TRAFİK KAMERASI SİMÜLATÖRÜ &bull; CAM-04 DOĞU KAVŞAĞI
+            </span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Kamera Sensörü Sen Ol: Yaya Geçidi İhlalini Yakala!
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
+            Trafik lambası ve yaya geçidini izleyen akıllı bir yapay zeka kamerasısınız. Yayalar yeşil ışıkta geçerken durmayan veya güvenli alana dalan sürücüleri tespit edin; <strong>[SPACE] veya FOTOĞRAF ÇEK</strong> butonuna basarak aracı yakalayın, plaka OCR hattını çalıştırın ve ceza tutanağını düzenleyin!
+          </p>
+        </div>
+
+        <!-- Audio Control Toggle -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="cam-sound-toggle" onclick="toggleCamSound()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-900 border border-white/10 hover:border-emerald-400/40 text-xs font-mono text-emerald-300 transition-all shadow-inner">
+            <i id="cam-sound-icon" data-lucide="volume-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span id="cam-sound-text">SES AÇIK</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Game Arena Grid: Left is Live HUD Canvas, Right is OCR Pipeline & Ledger -->
+      <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Interactive Canvas Viewport (7 Cols) -->
+        <div class="lg:col-span-7 space-y-3">
+          <!-- Canvas Container with OSD Overlay -->
+          <div class="relative w-full rounded-2xl bg-black border-2 border-emerald-500/40 overflow-hidden shadow-2xl crt-scanlines">
+            <!-- Laser Scanline Animation -->
+            <div class="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400/80 to-transparent animate-cam-scan pointer-events-none z-20"></div>
+
+            <!-- Viewfinder OSD Header Overlay -->
+            <div class="absolute top-2 left-2 right-2 flex items-center justify-between text-[10px] font-mono z-20 pointer-events-none bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+              <div class="flex items-center gap-2 text-rose-400 font-bold">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                <span>REC ● CAM-04 (YAYA GEÇİDİ GÜNEY)</span>
+              </div>
+              <div class="flex items-center gap-3 text-slate-300">
+                <span id="hud-clock" class="text-emerald-400 font-bold">14:32:08</span>
+                <span class="text-cyan-300">24 FPS GPU</span>
+                <span id="hud-fov" class="text-amber-400">FOV: 90° DÜZ</span>
+              </div>
+            </div>
+
+            <!-- Viewfinder Corner Brackets -->
+            <div class="absolute top-12 left-3 w-6 h-6 border-t-2 border-l-2 border-emerald-400 z-20 pointer-events-none"></div>
+            <div class="absolute top-12 right-3 w-6 h-6 border-t-2 border-r-2 border-emerald-400 z-20 pointer-events-none"></div>
+            <div class="absolute bottom-12 left-3 w-6 h-6 border-b-2 border-l-2 border-emerald-400 z-20 pointer-events-none"></div>
+            <div class="absolute bottom-12 right-3 w-6 h-6 border-b-2 border-r-2 border-emerald-400 z-20 pointer-events-none"></div>
+
+            <!-- Violation Warning Alert (Real-time hazard banner inside canvas) -->
+            <div id="canvas-violation-alert" class="absolute top-14 left-1/2 -translate-x-1/2 z-30 pointer-events-none hidden transition-all duration-300">
+              <div class="px-3.5 py-1.5 rounded-xl bg-rose-600/90 text-white font-mono text-xs font-bold border border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.6)] flex items-center gap-2 animate-bounce">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-white"></i>
+                <span id="canvas-violation-text">⚠️ İHLAL! YAYAYA YOL VERMEDİ (ŞAPELY KESİŞİMİ)</span>
+              </div>
+            </div>
+
+            <!-- Prominent Floating Detection Result Toast Banner (Success / Failure feedback) -->
+            <div id="detection-result-toast" class="absolute top-12 left-1/2 -translate-x-1/2 z-40 pointer-events-none transition-all duration-300 opacity-0 scale-95">
+              <div id="toast-inner-box" class="px-4 py-2 rounded-xl text-white font-mono text-xs font-bold shadow-2xl flex items-center gap-2.5 border">
+                <i id="toast-icon" data-lucide="check-circle" class="w-4 h-4"></i>
+                <span id="toast-msg">BAŞARILI TESPİT</span>
+              </div>
+            </div>
+
+            <!-- HTML5 CANVAS -->
+            <canvas id="trafficCanvas" width="720" height="420" class="w-full h-auto block cursor-crosshair bg-[#0d131a]"></canvas>
+
+            <!-- Bottom Camera Controls Strip (No-wrap guaranteed) -->
+            <div class="p-3 bg-dark-950/95 border-t border-white/10 flex items-center justify-between gap-3 text-xs font-mono overflow-x-auto sm:overflow-visible">
+              <div class="flex items-center gap-2 shrink-0">
+                <!-- Big Trigger Button -->
+                <button type="button" onclick="triggerSnapshot()" class="px-3 sm:px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.4)] active:scale-95 transition-all shrink-0">
+                  <i data-lucide="camera" class="w-4 h-4"></i>
+                  <span> İHLALİ YAKALA</span>
+                  <kbd class="px-1.5 py-0.5 rounded bg-dark-950/20 text-dark-950 text-[10px] font-sans font-bold">SPACE</kbd>
+                </button>
+              </div>
+
+              <!-- Camera Mode, Filter & Perspective Controls (shrink-0 with fixed min-width to prevent wrapping) -->
+              <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="toggleCamMode()" id="btn-mode-toggle" class="min-w-[95px] justify-center px-2.5 py-1.5 rounded-lg bg-dark-900 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-1.5 shrink-0" title="Çekim Modu: Manuel / Otonom">
+                  <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400 shrink-0" id="icon-cam-mode"></i>
+                  <span id="text-cam-mode">Manuel</span>
+                </button>
+                <button type="button" onclick="toggleNightMode()" id="btn-night-mode" class="min-w-[85px] justify-center px-2.5 py-1.5 rounded-lg bg-dark-900 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-1.5 shrink-0" title="Gündüz / Gece Modu">
+                  <i data-lucide="sun" class="w-3.5 h-3.5 text-amber-400 shrink-0" id="icon-weather"></i>
+                  <span id="text-weather">Gündüz</span>
+                </button>
+                <button type="button" onclick="togglePerspective()" id="btn-perspective" class="min-w-[105px] justify-center px-2.5 py-1.5 rounded-lg bg-dark-900 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-1.5 shrink-0" title="Perspektif Açısı">
+                  <i data-lucide="maximize" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i>
+                  <span id="text-perspective">Açı: 90° Düz</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Game Instructions Bar -->
+          <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
+            <div class="p-2 rounded-xl bg-dark-900 border border-white/5">
+              <span class="text-rose-400 font-bold block mb-0.5">1. KIRMIZI IŞIK: DUR</span>
+              <span class="text-slate-400">Araçlar kırmızıda durur, yayalar karşıya geçer</span>
+            </div>
+            <div class="p-2 rounded-xl bg-dark-900 border border-white/5">
+              <span class="text-amber-400 font-bold block mb-0.5">2. KIRMIZIDA GEÇİŞ = İHLAL</span>
+              <span class="text-slate-400">Kırmızıda durmayan veya yayaya yol vermeyeni yakala</span>
+            </div>
+            <div class="p-2 rounded-xl bg-dark-900 border border-white/5">
+              <span class="text-cyan-400 font-bold block mb-0.5">3. SON 3 CEZA KAYDI</span>
+              <span class="text-slate-400">EasyOCR plakayı çözer, son 3 ceza deftere işlenir</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI Vision Pipeline, Plate Inspector & Violation Ledger (5 Cols) -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Live Enforcement Metrics Card -->
+          <div class="p-4 rounded-2xl bg-dark-900 border border-white/10 space-y-3 font-mono">
+            <div class="flex items-center justify-between text-xs pb-2 border-b border-white/10">
+              <span class="text-white font-bold flex items-center gap-1.5">
+                <i data-lucide="shield" class="w-4 h-4 text-emerald-400"></i>
+                DENETİM SKOR TABLOSU
+              </span>
+              <span id="game-reputation" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">GÜVENİLİRLİK: %100</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="p-2 rounded-xl bg-dark-950 border border-emerald-500/20">
+                <div class="text-[9px] text-emerald-400 font-bold mb-0.5">BAŞARILI TESPİT</div>
+                <div id="stat-violations" class="text-lg font-bold text-emerald-400 font-pixel">0</div>
+              </div>
+              <div class="p-2 rounded-xl bg-dark-950 border border-rose-500/20">
+                <div class="text-[9px] text-rose-400 font-bold mb-0.5">BAŞARISIZ TESPİT</div>
+                <div id="stat-false-alarms" class="text-lg font-bold text-rose-400 font-pixel">0</div>
+              </div>
+              <div class="p-2 rounded-xl bg-dark-950 border border-amber-500/20">
+                <div class="text-[9px] text-amber-300 font-bold mb-0.5">TOPLAM CEZA</div>
+                <div id="stat-total-fines" class="text-sm font-bold text-amber-300 mt-1">0 ₺</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Computer Vision Pipeline Box -->
+          <div class="p-4 rounded-2xl bg-dark-900 border border-emerald-500/20 space-y-3 font-mono">
+            <div class="flex items-center justify-between text-xs pb-2 border-b border-white/10">
+              <span class="text-emerald-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                CANLI PLAKA &amp; OCR HIKAYESI
+              </span>
+              <span id="ocr-status-pill" class="text-[9px] px-2 py-0.5 rounded bg-dark-950 text-slate-400 border border-white/10">BEKLEMEDE</span>
+            </div>
+
+            <!-- OCR Inspection Stages Visualizer -->
+            <div class="space-y-2 text-[10px]">
+              <!-- Step 1: Cropping -->
+              <div class="p-2 rounded-xl bg-dark-950 border border-white/5 flex items-center justify-between">
+                <span class="text-slate-400">1. YOLOv8 Plate Bounding Box:</span>
+                <span id="ocr-stage-1" class="text-slate-500 font-bold">Hazır</span>
+              </div>
+              <!-- Step 2: 3x Cubic Upscaling & Kernel Sharpening -->
+              <div class="p-2 rounded-xl bg-dark-950 border border-white/5 flex items-center justify-between">
+                <span class="text-slate-400">2. 3x Büyütme &amp; [0,-1,0] Konvolüsyon:</span>
+                <span id="ocr-stage-2" class="text-slate-500 font-bold">Hazır</span>
+              </div>
+              <!-- Step 3: EasyOCR Reading -->
+              <div class="p-2.5 rounded-xl bg-slate-950 border border-emerald-400/30 flex items-center justify-between">
+                <div>
+                  <span class="text-slate-400 block text-[9px]">3. EasyOCR Karakter Çıkarımı:</span>
+                  <span id="ocr-plate-result" class="text-sm font-bold text-white tracking-widest">-- --- ----</span>
+                </div>
+                <span id="ocr-confidence-badge" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Bekleniyor</span>
+              </div>
+              <!-- Step 4: Shapely Logic Check -->
+              <div class="p-2 rounded-xl bg-dark-950 border border-white/5 flex items-center justify-between text-[9px]">
+                <span class="text-slate-400">4. Shapely.intersects(GuvenliAlan):</span>
+                <span id="ocr-shapely-status" class="text-slate-500 font-bold">Kesişim Yok</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Violation Record Ledger (Son Kesilen 3 Ceza) -->
+          <div class="p-4 rounded-2xl bg-dark-900 border border-white/10 space-y-2.5 font-mono">
+            <div class="flex items-center justify-between text-xs pb-1.5 border-b border-white/10">
+              <span class="text-white font-bold flex items-center gap-1.5">
+                <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i>
+                MERKEZİ CEZA KAYIT DEFTERİ
+              </span>
+              <span class="text-[9px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 font-bold">SON 3 PLAKA</span>
+            </div>
+            
+            <div id="violation-ledger-list" class="space-y-1.5 text-[10px]">
+              <div id="ledger-empty-msg" class="py-6 text-center text-slate-500 text-[10px]">
+                Henüz kayıtlı ihlal yok. Kırmızıda durmayan veya yayaya yol vermeyen araçları yakalayın! (Maksimum son 3 kayıt saklanır)
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- DETAILED ACADEMIC & TECHNICAL REPORT (MAKALENİN TÜM DETAYLARI) -->
+    <!-- ========================================================================= -->
+    <div id="academic-report" class="space-y-12">
+
+      <!-- Section Title -->
+      <div class="border-b border-white/10 pb-4">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+            ARAŞTIRMA &amp; TEKNİK MAKALE RAPORU
+          </span>
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+          Sistem Mimarisi, Matematiksel Modeller ve Saha Bulguları
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+          Roboflow, YOLOv8, Shapely Geometrisi, EasyOCR ve REST API ile uçtan uca yaya güvenliği mimarisi.
+        </p>
+      </div>
+
+      <!-- ABSTRACT (ÖZET) -->
+      <div class="glass-card rounded-2xl p-7 space-y-4 border-emerald-500/20">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="file-text" class="w-5 h-5 text-emerald-400"></i>
+          ÖZET (ABSTRACT)
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm leading-relaxed">
+          <div class="space-y-2 text-slate-300">
+            <h5 class="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">🇹🇷 Türkçe Özet</h5>
+            <p>
+              Bu çalışmada, şehir içi trafikte yaya güvenliğini artırmak amacıyla derin öğrenme teknikleri kullanılarak otonom bir yaya geçidi ihlal tespit sistemi geliştirilmiştir. Geliştirilen sistem, Roboflow platformu üzerinde hazırlanan ve toplamda 7.000'den fazla görüntü içeren geniş kapsamlı veri setleri ile eğitilmiş beş farklı özelleştirilmiş YOLOv8 modeli kullanmaktadır.
+            </p>
+            <p>
+              Bu modüler yapı sayesinde yaya, araç, trafik ışığı, yaya yolu ve plaka tespiti işlemleri yüksek hassasiyetle gerçekleştirilmektedir. Geliştirilen algoritma, Shapely kütüphanesi ile geometrik kesişim hesaplamaları yaparak, yayaların geçiş hakkına sahip olduğu durumlarda (yeşil ışık veya ışıksız geçitler) araçların güvenli alanı ihlal edip etmediğini analiz eder. İhlal tespit edildiğinde plaka tespiti yapılmakta ve Optik Karakter Tanıma (OCR) yöntemleri ile plaka metne dönüştürülerek bir REST API aracılığıyla merkezi sunucuya iletilmektedir. Test sonuçlarına göre YOLOv8 modeli <strong>%94.5 mAP</strong> başarısına ulaşmış, EasyOCR modülü ise gündüz koşullarında <strong>%89 doğruluk</strong> ile çalışmıştır. GPU hızlandırması ile sistem ortalama <strong>24 FPS</strong> hızında gerçek zamanlı çıkarım yapmaktadır.
+            </p>
+            <div class="pt-2 text-[11px] font-mono text-slate-400">
+              <strong class="text-emerald-400">Anahtar Kelimeler:</strong> YOLOv8, Nesne Tespiti, Optik Karakter Tanıma (OCR), Shapely Kütüphanesi, Akıllı Ulaşım Sistemleri, Görüntü İşleme.
+            </div>
+          </div>
+
+          <div class="space-y-2 text-slate-300 border-t md:border-t-0 md:border-l border-white/10 md:pl-6 pt-4 md:pt-0">
+            <h5 class="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">🇬🇧 English Abstract</h5>
+            <p>
+              In this study, an autonomous pedestrian crosswalk violation detection system was developed using deep learning techniques to enhance urban pedestrian safety. The system employs five customized YOLOv8 models trained on extensive datasets prepared on the Roboflow platform comprising over 7,000 images in total.
+            </p>
+            <p>
+              This modular architecture enables high-precision detection of pedestrians, vehicles, traffic lights, crosswalks, and license plates. The algorithm computes spatial intersections using the Shapely library to analyze whether vehicles violate the safety zone while pedestrians have the right-of-way (green light or unsignalized crossings). Upon violation detection, license plates are localized and transcribed via Optical Character Recognition (OCR), with violation records and evidence images transmitted to a central server via a REST API. Experimental results demonstrate a <strong>94.5% mAP@50</strong> accuracy for YOLOv8 and an <strong>89% accuracy</strong> for EasyOCR in daytime conditions, operating in real time at an average of <strong>24 FPS</strong>.
+            </p>
+            <div class="pt-2 text-[11px] font-mono text-slate-400">
+              <strong class="text-cyan-400">Keywords:</strong> YOLOv8, Object Detection, Optical Character Recognition (OCR), Shapely Library, Intelligent Transportation Systems, Computer Vision.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. GİRİŞ & LİTERATÜR KIYASLAMASI -->
+      <div class="glass-card rounded-2xl p-7 space-y-5">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="book-marked" class="w-5 h-5 text-cyan-400"></i>
+          1. GİRİŞ VE LİTERATÜR KIYASLAMASI (INTRODUCTION)
+        </h4>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Trafik kazalarının önlenmesi ve yaya güvenliğinin sağlanması, akıllı şehir uygulamalarının en kritik bileşenlerinden biridir. Özellikle sinyalizasyonun bulunmadığı veya sürücülerin kurallara uymadığı yaya geçitleri, ölümcül kazaların en sık yaşandığı noktalardır. Geçmişten günümüze bu sorunu çözmek için çeşitli bilgisayarlı görü teknikleri önerilmiştir.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+          <div class="p-4 rounded-xl bg-dark-900 border border-white/5 space-y-2">
+            <span class="text-amber-400 font-bold block">Geleneksel Yöntemler [1, 3]</span>
+            <p class="text-slate-400 leading-relaxed text-[11px]">
+              Dinamik arka plan çıkarımı ve temel kontur analizi. Değişken güneş açılarında, yağmurda, far parlamalarında ve yoğun trafikte yüksek oranda yanlış pozitif (False Positive) üretmektedir.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-dark-900 border border-white/5 space-y-2">
+            <span class="text-cyan-400 font-bold block">Termal &amp; Sensör Hibritleri [2, 4, 5]</span>
+            <p class="text-slate-400 leading-relaxed text-[11px]">
+              Purdue Üniversitesi ve çoklu nesne takibi (MOT) tabanlı sistemler. Gece görüşünde başarılı ancak yüksek sensör maliyeti ve karmaşık kalibrasyon gerektirmektedir.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl bg-dark-900 border border-emerald-500/30 space-y-2">
+            <span class="text-emerald-400 font-bold block">Bizim Yaklaşımımız (YOLOv8 + Shapely)</span>
+            <p class="text-slate-300 leading-relaxed text-[11px]">
+              5 özelleştirilmiş modüler YOLOv8 modeli, Shapely ile matematiksel güvenli alan kesişimi, 5 aşamalı OCR ön işleme ve REST API ile uçtan uca otomatik ceza tanzimi.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-slate-300 leading-relaxed">
+          <strong class="text-emerald-400 font-mono">Bu Çalışmanın Temel Farkı ve Yeniliği:</strong> Literatürdeki mevcut çalışmalar [6, 7] çoğunlukla yalnızca araç veya yaya tespitine odaklanırken; bu proje Shapely kütüphanesini kural tabanlı bir uzamsal analiz motoru olarak sisteme entegre etmiş, kural ihlalini mikro saniyeler düzeyinde kanıtlamış ve plakayı otomatik metne çevirerek insan müdahalesine gerek duymayan uçtan uca (end-to-end) bir denetim pipeline'ı kurmuştur.
+        </div>
+      </div>
+
+      <!-- 2. MATERYAL VE YÖNTEM: VERİ SETİ & MODÜLER MİMARİ -->
+      <div class="glass-card rounded-2xl p-7 space-y-6">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="layers" class="w-5 h-5 text-emerald-400"></i>
+          2. MATERYAL VE YÖNTEM (MATERIAL &amp; METHODS)
+        </h4>
+
+        <!-- Veri Seti Tablosu (Tablo 1) -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h5 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+              <span class="text-emerald-400">2.1.</span> Modüler Veri Seti Mimarisi (Roboflow)
+            </h5>
+            <span class="text-xs font-mono text-slate-400">Toplam: 7.017 Görüntü</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Sistemin doğruluğunu maksimize etmek için tek bir hantal model yerine, her sınıf için bağımsız olarak optimize edilmiş veri setleri (Modular Dataset Approach) oluşturulmuştur. Etiketleme ve augmentasyon süreçleri Roboflow üzerinde yürütülmüştür.
+          </p>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono border-collapse border border-white/10 rounded-xl overflow-hidden">
+              <thead class="bg-dark-900 text-slate-300 border-b border-white/10">
+                <tr>
+                  <th class="p-3">Hedef Sınıf (Target Class)</th>
+                  <th class="p-3">Veri Seti Kaynağı</th>
+                  <th class="p-3">Görüntü Sayısı (Images)</th>
+                  <th class="p-3">Eğitilen Model Formatı</th>
+                  <th class="p-3">Kullanım Amacı</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 bg-dark-950/60 text-slate-400">
+                <tr class="hover:bg-white/[0.02]">
+                  <td class="p-3 font-bold text-emerald-400">Araç (Vehicle)</td>
+                  <td class="p-3">Roboflow Custom</td>
+                  <td class="p-3 text-white font-bold">2.987</td>
+                  <td class="p-3 text-cyan-300">YOLOv8</td>
+                  <td class="p-3">Sedan, SUV, Taksi, Otobüs tespiti</td>
+                </tr>
+                <tr class="hover:bg-white/[0.02]">
+                  <td class="p-3 font-bold text-blue-400">Yaya Yolu (Crosswalk)</td>
+                  <td class="p-3">Roboflow Custom</td>
+                  <td class="p-3 text-white font-bold">1.300</td>
+                  <td class="p-3 text-cyan-300">YOLOv8</td>
+                  <td class="p-3">Zebra geçit uzamsal sınırları</td>
+                </tr>
+                <tr class="hover:bg-white/[0.02]">
+                  <td class="p-3 font-bold text-amber-400">İnsan (Person)</td>
+                  <td class="p-3">Roboflow Custom</td>
+                  <td class="p-3 text-white font-bold">1.000</td>
+                  <td class="p-3 text-cyan-300">YOLOv8</td>
+                  <td class="p-3">Yaya varlığı ve geçiş konumu</td>
+                </tr>
+                <tr class="hover:bg-white/[0.02]">
+                  <td class="p-3 font-bold text-rose-400">Plaka (License Plate)</td>
+                  <td class="p-3">Roboflow Custom</td>
+                  <td class="p-3 text-white font-bold">1.300</td>
+                  <td class="p-3 text-cyan-300">YOLOv8</td>
+                  <td class="p-3">Plaka alanını mikrosaniyede kırpma</td>
+                </tr>
+                <tr class="hover:bg-white/[0.02]">
+                  <td class="p-3 font-bold text-purple-400">Yaya Trafik Işığı</td>
+                  <td class="p-3">Roboflow Custom</td>
+                  <td class="p-3 text-white font-bold">430</td>
+                  <td class="p-3 text-cyan-300">YOLOv8</td>
+                  <td class="p-3">Kırmızı / Yeşil durum tespiti</td>
+                </tr>
+                <tr class="bg-emerald-950/20 font-bold text-white border-t border-emerald-500/30">
+                  <td class="p-3 text-emerald-300">TOPLAM VERİ SETİ</td>
+                  <td class="p-3">5 Özelleştirilmiş Set</td>
+                  <td class="p-3 text-emerald-400 text-sm">7.017 Görüntü</td>
+                  <td class="p-3 text-cyan-300">5 Model</td>
+                  <td class="p-3 text-emerald-300">Modüler YOLOv8 Hattı</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2.4 ROI VE SHAPELY MANTIKSAL ANALİZİ -->
+        <div class="space-y-3 pt-4 border-t border-white/10">
+          <h5 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+            <span class="text-emerald-400">2.4.</span> İlgi Alanı (ROI) ve Shapely Geometrik Mantık Formülasyonu
+          </h5>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Hatalı alarmları ve gereksiz GPU yükünü engellemek için, tespit edilen yaya geçidi etrafına bir iç boşluk (<code>IC_BOSLUK</code> / padding) eklenerek <strong>Güvenli Alan Çokgeni (Polygon)</strong> türetilir. Yayaların ve araçların sınırlayıcı kutuları (Bounding Box) Shapely <code>box</code> geometrilerine dönüştürülür:
+          </p>
+
+          <!-- Mathematical Formula Box -->
+          <div class="p-4 rounded-xl bg-dark-950 border border-cyan-500/30 font-mono text-xs space-y-2">
+            <div class="text-cyan-300 font-bold flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>İHLAL TETİKLEME ALGORİTMASI MANTIKSAL FORMÜLÜ:</span>
+            </div>
+            <div class="p-3 rounded bg-black/60 border border-white/10 text-emerald-400 text-xs sm:text-sm font-bold tracking-wider overflow-x-auto">
+              İHLAL = (Işık{Yeşil} or Işık{Yok}) and (Yaya in Geçit) and (Araç in GüvenliAlan)
+            </div>
+            <p class="text-[11px] text-slate-400">
+              Bu koşul sağlandığı anda Shapely <code>intersects()</code> fonksiyonu <code>True</code> döner ve sistem derhal araç plakasını hedef alan kırpma ve OCR prosedürünü başlatır.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2.5 PLAKA TANIMA VE 5 AŞAMALI ÖN İŞLEME HATTI -->
+        <div class="space-y-3 pt-4 border-t border-white/10">
+          <h5 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+            <span class="text-emerald-400">2.5.</span> Plaka Tanıma ve 5 Aşamalı Görüntü Ön İşleme (Pre-processing)
+          </h5>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            EasyOCR modelinin ham görüntülerdeki gürültüden ve düşük çözünürlükten etkilenmesini önlemek için, plaka kutusuna özel bir görüntü işleme boru hattı (pipeline) uygulanır:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs font-mono">
+            <div class="p-3 rounded-xl bg-dark-900 border border-white/10">
+              <span class="text-emerald-400 font-bold block mb-1">1. Cropping</span>
+              <span class="text-slate-400 text-[11px]">YOLOv8-Plate sınırlayıcı kutusundan plaka bölgesini kesme</span>
+            </div>
+            <div class="p-3 rounded-xl bg-dark-900 border border-white/10">
+              <span class="text-cyan-400 font-bold block mb-1">2. 3x Upscaling</span>
+              <span class="text-slate-400 text-[11px]">Cubic Interpolation ile plaka boyutunu 3 kat büyütme (cv2.resize)</span>
+            </div>
+            <div class="p-3 rounded-xl bg-dark-900 border border-white/10">
+              <span class="text-blue-400 font-bold block mb-1">3. Grayscale</span>
+              <span class="text-slate-400 text-[11px]">Renk kanalı gürültüsünü atarak gri tonlamaya çevirme</span>
+            </div>
+            <div class="p-3 rounded-xl bg-dark-900 border border-amber-400/30">
+              <span class="text-amber-400 font-bold block mb-1">4. Sharpening</span>
+              <span class="text-slate-400 text-[11px]">Karakter kenarlarını keskinleştiren konvolüsyon çekirdeği (Kernel)</span>
+            </div>
+            <div class="p-3 rounded-xl bg-dark-900 border border-white/10">
+              <span class="text-rose-400 font-bold block mb-1">5. Text Clean</span>
+              <span class="text-slate-400 text-[11px]">Boşlukları silme, regex ile TR plaka standartlarına uydurma</span>
+            </div>
+          </div>
+
+          <!-- Sharpening Convolution Matrix -->
+          <div class="p-3 rounded-xl bg-dark-950 border border-amber-500/30 font-mono text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <span class="text-amber-300 font-bold block">Özel Konvolüsyon Keskinleştirme Çekirdeği (Laplacian Edge Kernel):</span>
+              <span class="text-slate-400 text-[11px]">Plaka karakterlerinin kenar kontrastını 5 katına çıkaran matris:</span>
+            </div>
+            <div class="p-2 rounded bg-black/80 border border-white/15 text-center font-bold text-amber-400 tracking-widest text-[11px]">
+              KERNEL = [[ 0, -1,  0],<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[-1,  5, -1],<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 0, -1,  0]]
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.6 REST API VERİ İLETİMİ -->
+        <div class="space-y-3 pt-4 border-t border-white/10">
+          <h5 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+            <span class="text-emerald-400">2.6.</span> REST API Veri İletimi ve Kanıt Görseli Gönderimi
+          </h5>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            İhlal tespit edildiğinde istemci bir HTTP POST isteği ile <code>/api/upload</code> uç noktasına şu JSON gövdesini ve kanıt JPG görselini gönderir:
+          </p>
+          <div class="p-3 rounded-xl bg-dark-950 border border-white/10 font-mono text-[11px] text-slate-300 overflow-x-auto">
+            <pre><code>{
+  "camera_id": "CAM-04-EAST-CROSSWALK",
+  "license_plate": "34 EGM 1923",
+  "violation_type": "PEDESTRIAN_CROSSWALK_NON_YIELD (KTK 74/A)",
+  "confidence_score": 0.942,
+  "timestamp": "2026-10-04T14:32:08.412Z",
+  "evidence_image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD...",
+  "status": "RECORDED"
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. BULGULAR & MODEL PERFORMANS TABLOSU (TABLO 2) -->
+      <div class="glass-card rounded-2xl p-7 space-y-6">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="bar-chart-2" class="w-5 h-5 text-emerald-400"></i>
+          3. BULGULAR VE MODEL PERFORMANSI (RESULTS &amp; PERFORMANCE)
+        </h4>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Geliştirilen sistemin başarımını ölçmek için Kesinlik (Precision), Duyarlılık (Recall) ve Ortalama Kesinlik (mAP@50) metrikleri kullanılmıştır. 5 özelleştirilmiş modelin test sonuçları Tablo 2'de listelenmiştir:
+        </p>
+
+        <!-- Tablo 2: Sınıf Bazlı Performans -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono border-collapse border border-white/10 rounded-xl overflow-hidden">
+            <thead class="bg-dark-900 text-slate-300 border-b border-white/10">
+              <tr>
+                <th class="p-3">Model / Sınıf</th>
+                <th class="p-3">Kesinlik (Precision - P)</th>
+                <th class="p-3">Duyarlılık (Recall - R)</th>
+                <th class="p-3">Ortalama Kesinlik (mAP@50)</th>
+                <th class="p-3">Çıkarım Süresi (Inference)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 bg-dark-950/60 text-slate-400">
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-3 font-bold text-white">YOLOv8-Vehicle</td>
+                <td class="p-3 text-emerald-400 font-bold">0.96 (%96.0)</td>
+                <td class="p-3 text-emerald-400 font-bold">0.94 (%94.0)</td>
+                <td class="p-3 text-emerald-300 font-bold">0.96</td>
+                <td class="p-3 text-slate-300">12.1 ms</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-3 font-bold text-white">YOLOv8-Crosswalk</td>
+                <td class="p-3 text-emerald-400 font-bold">0.96 (%96.0)</td>
+                <td class="p-3 text-cyan-400 font-bold">0.93 (%93.0)</td>
+                <td class="p-3 text-emerald-300 font-bold">0.91</td>
+                <td class="p-3 text-slate-300">8.4 ms</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-3 font-bold text-white">YOLOv8-Person</td>
+                <td class="p-3 text-cyan-400 font-bold">0.93 (%93.0)</td>
+                <td class="p-3 text-blue-400 font-bold">0.89 (%89.0)</td>
+                <td class="p-3 text-cyan-300 font-bold">0.85</td>
+                <td class="p-3 text-slate-300">9.7 ms</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-3 font-bold text-white">YOLOv8-Plate</td>
+                <td class="p-3 text-blue-400 font-bold">0.89 (%89.0)</td>
+                <td class="p-3 text-emerald-400 font-bold">0.94 (%94.0)</td>
+                <td class="p-3 text-emerald-300 font-bold">0.92</td>
+                <td class="p-3 text-slate-300">6.2 ms</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-3 font-bold text-white">YOLOv8-TrafficLight</td>
+                <td class="p-3 text-emerald-400 font-bold">0.94 (%94.0)</td>
+                <td class="p-3 text-cyan-400 font-bold">0.91 (%91.0)</td>
+                <td class="p-3 text-cyan-300 font-bold">0.88</td>
+                <td class="p-3 text-slate-300">5.5 ms</td>
+              </tr>
+              <tr class="bg-emerald-950/30 font-bold text-white border-t border-emerald-500/30 text-sm">
+                <td class="p-3 text-emerald-300">GENEL ORTALAMA (MEAN)</td>
+                <td class="p-3 text-emerald-400">0.91</td>
+                <td class="p-3 text-emerald-400">0.93</td>
+                <td class="p-3 text-emerald-300 text-base">0.945 (%94.5)</td>
+                <td class="p-3 text-cyan-300">~24 FPS (41.6 ms Toplam)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. TARTIŞMA & SAHA KISITLARI (DISCUSSION & LIMITATIONS) -->
+      <div class="glass-card rounded-2xl p-7 space-y-4 border-amber-500/20">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="alert-octagon" class="w-5 h-5 text-amber-400"></i>
+          4. TARTIŞMA VE SAHA KISITLARI (DISCUSSION &amp; PERSPECTIVE CHALLENGES)
+        </h4>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Sistemin genel nesne tespit başarısı (%94.5 mAP) son derece yüksek olmasına rağmen, gerçek saha testlerinde kritik bir teknik kısıt ve operasyonel darboğaz tespit edilmiştir:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+          <div class="p-4 rounded-xl bg-dark-900 border border-rose-500/30 space-y-2">
+            <span class="text-rose-400 font-bold flex items-center gap-2">
+              <i data-lucide="camera-off" class="w-4 h-4"></i>
+              Perspektif Bozulması (Perspective Distortion)
+            </span>
+            <p class="text-slate-400 leading-relaxed text-[11px]">
+              EasyOCR kütüphanesinin başarımının kamera montaj açısına ve plakanın geliş açısına doğrudan bağımlı olduğu kanıtlanmıştır. Araçların yaya geçidine çapraz girdiği veya kameranın yüksek direkte konumlandığı açılarda (non-frontal), yamulan plaka karakterleri ("0" ile "O", "4" ile "A") hatalı okunmakta veya ayrıştırılamamaktadır.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-dark-900 border border-emerald-500/30 space-y-2">
+            <span class="text-emerald-400 font-bold flex items-center gap-2">
+              <i data-lucide="check-check" class="w-4 h-4"></i>
+              Oylama Mekanizmasıyla %15 İyileştirme (Voting)
+            </span>
+            <p class="text-slate-300 leading-relaxed text-[11px]">
+              Araç ihlal alanından geçerken art arda 5 ardışık kareden plaka okunmakta ve karakter bazlı bir frekans oylaması (Voting Mechanism) yapılarak en çok tekrar eden karakter kümesi seçilmektedir. Bu yöntem tekil kare okuma hatalarını <strong>%15 oranında</strong> azaltmayı başarmıştır.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. SONUÇ VE GELECEK ÇALIŞMALAR (CONCLUSION & FUTURE WORK) -->
+      <div class="glass-card rounded-2xl p-7 space-y-4">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="compass" class="w-5 h-5 text-cyan-400"></i>
+          5. SONUÇ VE GELECEK ÇALIŞMALAR (CONCLUSION &amp; ROADMAP)
+        </h4>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Bu çalışmada geliştirilen sistem; modüler YOLOv8 modelleri ve Shapely geometrik mantığı ile yayaya yol vermeyen araçları %94.5 mAP doğrulukla tespit eden ve EasyOCR ile plakayı dijital tutanağa dönüştüren çalışan bir prototip ortaya koymuştur.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+          <div class="p-3 rounded-xl bg-dark-900 border border-white/5">
+            <span class="text-cyan-400 font-bold block mb-1">STN &amp; Homografi</span>
+            <span class="text-slate-400 text-[11px]">Açı bozulmalarını gidermek için Uzamsal Dönüştürücü Ağlar (Spatial Transformer Networks - STN)</span>
+          </div>
+          <div class="p-3 rounded-xl bg-dark-900 border border-white/5">
+            <span class="text-emerald-400 font-bold block mb-1">GAN ile Gece Görüşü</span>
+            <span class="text-slate-400 text-[11px]">Düşük ışık ve far parlamalarını dengeleyen CycleGAN görüntü zenginleştirme</span>
+          </div>
+          <div class="p-3 rounded-xl bg-dark-900 border border-white/5">
+            <span class="text-amber-400 font-bold block mb-1">Uç Cihaz (Edge AI)</span>
+            <span class="text-slate-400 text-[11px]">NVIDIA Jetson Orin Nano üzerinde TensorRT ile 35+ FPS yerel çıkarım</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. AKADEMİK KAYNAKLAR (REFERENCES) -->
+      <div class="glass-card rounded-2xl p-7 space-y-4">
+        <h4 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+          <i data-lucide="bookmark" class="w-5 h-5 text-slate-400"></i>
+          KAYNAKLAR (REFERENCES)
+        </h4>
+        <ol class="list-decimal list-inside space-y-2 text-xs font-mono text-slate-400 leading-relaxed">
+          <li>"Automated Traffic Violation Detection," ResearchGate.</li>
+          <li>"Real-Time Jaywalking Detection and Notification System using Deep Learning and Multi-Object Tracking," ResearchGate.</li>
+          <li>"Traffic Signal Violation Detection Through Computer Vision," ResearchGate.</li>
+          <li>"Pedestrian Crossing Safety System at Traffic Lights," The SAI Organization.</li>
+          <li>"Study of Identifying Jaywalkers by Analyzing Camera Data," Purdue University Libraries (docs.lib.purdue.edu).</li>
+          <li>"Predicting Pedestrian Violations in Urban Intersections," NRSO (National Road Safety Organization).</li>
+          <li>"AI-Based Traffic Surveillance for Violation Detection and Classification," IJIRT (International Journal of Innovative Research in Technology).</li>
+          <li>"SMART CROSSWALK: Machine Learning and Image Processing for Pedestrian Accident &amp; Rule Violation Detection," AIRCCSE.</li>
+          <li>"A Real-Time Proactive Intersection Safety Monitoring System Based on Video Data," Rutgers CAIT.</li>
+          <li>"Pedestrian Traffic Signal Violations," rosap.ntl.bts.gov.</li>
+        </ol>
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation CTA -->
+    <div class="text-center pt-16 border-t border-white/10 mt-16">
+      <a href="index.html#projects" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Diğer Portfolyo Projelerini İncele</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT GAME ENGINE & AUDIO CONTROLLER -->
+  <!-- ========================================================================= -->
+  <script>
+    // 1. Audio System (Synthetic Web Audio API - Zero Asset Dependency)
+    let audioCtx = null;
+    let isSoundMuted = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(freq, dur, type = 'sine', vol = 0.15) {
+      if (isSoundMuted) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+      } catch (e) {}
+    }
+
+    function playShutterSound() {
+      if (isSoundMuted) return;
+      playTone(1200, 0.05, 'square', 0.2);
+      setTimeout(() => playTone(800, 0.08, 'sawtooth', 0.15), 50);
+    }
+
+    function playSuccessChime() {
+      if (isSoundMuted) return;
+      playTone(523.25, 0.1, 'sine', 0.2);
+      setTimeout(() => playTone(659.25, 0.1, 'sine', 0.2), 90);
+      setTimeout(() => playTone(783.99, 0.18, 'sine', 0.2), 180);
+    }
+
+    function playBuzzer() {
+      if (isSoundMuted) return;
+      playTone(180, 0.25, 'sawtooth', 0.25);
+    }
+
+    function toggleCamSound() {
+      isSoundMuted = !isSoundMuted;
+      const text = document.getElementById('cam-sound-text');
+      const icon = document.getElementById('cam-sound-icon');
+      if (isSoundMuted) {
+        text.textContent = 'SES KAPALI';
+        icon.setAttribute('data-lucide', 'volume-x');
+      } else {
+        text.textContent = 'SES AÇIK';
+        icon.setAttribute('data-lucide', 'volume-2');
+        playTone(600, 0.1);
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // 2. Game Modes & Toggles
+    let isAutoMode = false;
+    let isNightMode = false;
+    let isTiltedPerspective = false;
+
+    function toggleCamMode() {
+      isAutoMode = !isAutoMode;
+      const btn = document.getElementById('btn-mode-toggle');
+      const text = document.getElementById('text-cam-mode');
+      const icon = document.getElementById('icon-cam-mode');
+
+      if (!isAutoMode) {
+        text.textContent = 'Manuel';
+        icon.setAttribute('data-lucide', 'camera');
+        btn.className = "min-w-[95px] justify-center px-2.5 py-1.5 rounded-lg bg-dark-900 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-1.5 shrink-0";
+        icon.className = "w-3.5 h-3.5 text-emerald-400 shrink-0";
+        playTone(440, 0.1);
+      } else {
+        text.textContent = 'Otonom';
+        icon.setAttribute('data-lucide', 'bot');
+        btn.className = "min-w-[95px] justify-center px-2.5 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-300 font-bold hover:bg-cyan-500/30 transition-all flex items-center gap-1.5 shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]";
+        icon.className = "w-3.5 h-3.5 text-cyan-300 shrink-0";
+        playTone(880, 0.1);
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function toggleNightMode() {
+      isNightMode = !isNightMode;
+      document.getElementById('text-weather').textContent = isNightMode ? 'Gece' : 'Gündüz';
+      const icon = document.getElementById('icon-weather');
+      icon.setAttribute('data-lucide', isNightMode ? 'moon' : 'sun');
+      if (window.lucide) lucide.createIcons();
+      playTone(500, 0.08);
+    }
+
+    function togglePerspective() {
+      isTiltedPerspective = !isTiltedPerspective;
+      const btn = document.getElementById('btn-perspective');
+      const text = document.getElementById('text-perspective');
+      text.textContent = isTiltedPerspective ? 'Açı: 45° Çapraz' : 'Açı: 90° Düz';
+      document.getElementById('hud-fov').textContent = isTiltedPerspective ? 'FOV: 45° ÇAPRAZ' : 'FOV: 90° DÜZ';
+      
+      if (isTiltedPerspective) {
+        btn.className = "min-w-[105px] justify-center px-2.5 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-300 font-bold hover:bg-cyan-500/30 transition-all flex items-center gap-1.5 shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]";
+      } else {
+        btn.className = "min-w-[105px] justify-center px-2.5 py-1.5 rounded-lg bg-dark-900 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-1.5 shrink-0";
+      }
+      playTone(600, 0.08);
+    }
+
+    // 3. Traffic Simulation Engine on HTML5 Canvas
+    const canvas = document.getElementById('trafficCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Traffic State: vehicleLightState controls vehicle behavior (RED = Cars must stop, GREEN = Cars go)
+    let vehicleLightState = 'RED'; // Starts RED for vehicles -> Pedestrians can cross safely
+    let lightTimer = 0;
+    const LIGHT_DURATION = 420; // ~14 saniyelik ışık periyotları
+
+    let scoreViolations = 0;
+    let scoreFalseAlarms = 0;
+    let totalFineAmount = 0;
+
+    // License Plate Database for Spawning Vehicles
+    const PLATES = [
+      { plate: "34 EGM 1923", model: "SEDAN BEYAZ", make: "Toyota Corolla" },
+      { plate: "06 BJK 1903", model: "SUV SİYAH", make: "BMW X5" },
+      { plate: "35 GÖZ 1925", model: "TAKSİ SARI", make: "Fiat Egea" },
+      { plate: "16 BUR 2010", model: "HATCHBACK KIRMIZI", make: "Renault Clio" },
+      { plate: "07 ANT 888", model: "SPOR MAVİ", make: "Audi A5" },
+      { plate: "42 KNY 1922", model: "SEDAN GRİ", make: "Volkswagen Passat" },
+      { plate: "34 YAY 2024", model: "MINIBÜS BEYAZ", make: "Ford Transit" }
+    ];
+
+    // Vehicles Array
+    let vehicles = [];
+    // Pedestrians Array
+    let pedestrians = [];
+
+    // Shapely Safe Zone Coordinates (Horizontal Crosswalk Area)
+    const SAFE_ZONE = {
+      x: 310,
+      y: 90,
+      w: 100,
+      h: 240
+    };
+
+    function spawnVehicle() {
+      const isRightToLeft = Math.random() > 0.5;
+      // Calmer, observable vehicle speed (0.8 - 1.4 px/frame)
+      const speed = 0.8 + Math.random() * 0.6;
+      // 45% of vehicles are unruly violators that ignore RED lights!
+      const isViolator = Math.random() > 0.55; 
+      const plateInfo = PLATES[Math.floor(Math.random() * PLATES.length)];
+      const laneY = isRightToLeft ? 150 : 230; // 2 Lanes
+
+      vehicles.push({
+        x: isRightToLeft ? 740 : -90,
+        y: laneY,
+        w: 80,
+        h: 42,
+        speed: isRightToLeft ? -speed : speed,
+        isRightToLeft: isRightToLeft,
+        isViolator: isViolator,
+        stopped: false,
+        plate: plateInfo.plate,
+        model: plateInfo.model,
+        make: plateInfo.make,
+        color: plateInfo.model.includes('SARI') ? '#facc15' : 
+               plateInfo.model.includes('KIRMIZI') ? '#ef4444' : 
+               plateInfo.model.includes('MAVİ') ? '#3b82f6' : 
+               plateInfo.model.includes('SİYAH') ? '#1e293b' : '#f8fafc',
+        processed: false
+      });
+    }
+
+    function spawnPedestrian() {
+      // Calmer pedestrian walking speed (0.35 - 0.55 px/frame)
+      const isTopToBottom = Math.random() > 0.5;
+      pedestrians.push({
+        x: SAFE_ZONE.x + 15 + Math.random() * (SAFE_ZONE.w - 30),
+        y: isTopToBottom ? 50 : 350,
+        targetY: isTopToBottom ? 360 : 40,
+        speed: (isTopToBottom ? 1 : -1) * (0.35 + Math.random() * 0.2),
+        color: ['#10b981', '#06b6d4', '#f59e0b', '#ec4899', '#a855f7'][Math.floor(Math.random() * 5)],
+        radius: 6,
+        confidence: (0.88 + Math.random() * 0.08).toFixed(2)
+      });
+    }
+
+    // Initial Population
+    for (let i = 0; i < 3; i++) spawnVehicle();
+    spawnPedestrian();
+
+    // Game Loop
+    function updateSimulation() {
+      lightTimer++;
+      if (lightTimer > LIGHT_DURATION) {
+        lightTimer = 0;
+        // Alternate between Vehicle RED and Vehicle GREEN
+        vehicleLightState = (vehicleLightState === 'RED') ? 'GREEN' : 'RED';
+      }
+
+      // Random Spawning
+      if (Math.random() < 0.015 && vehicles.length < 5) spawnVehicle();
+      // Pedestrians spawn when Vehicle light is RED (Pedestrian Green)
+      if (vehicleLightState === 'RED' && Math.random() < 0.025 && pedestrians.length < 4) spawnPedestrian();
+
+      // Update Pedestrians
+      for (let i = pedestrians.length - 1; i >= 0; i--) {
+        const p = pedestrians[i];
+        p.y += p.speed;
+        if ((p.speed > 0 && p.y > p.targetY) || (p.speed < 0 && p.y < p.targetY)) {
+          pedestrians.splice(i, 1);
+        }
+      }
+
+      // Update Vehicles with REALISTIC RED/GREEN TRAFFIC LOGIC:
+      for (let i = vehicles.length - 1; i >= 0; i--) {
+        const v = vehicles[i];
+
+        // Is car approaching the stop line / crosswalk?
+        const isApproachingCrosswalk = v.isRightToLeft 
+          ? (v.x > SAFE_ZONE.x + SAFE_ZONE.w && v.x < SAFE_ZONE.x + SAFE_ZONE.w + 110)
+          : (v.x < SAFE_ZONE.x && v.x > SAFE_ZONE.x - 110);
+
+        // VEHICLE BEHAVIOR RULE:
+        // When vehicleLightState === 'RED':
+        // - Law-abiding cars STOP at the stop line (stopped = true).
+        // - Violator cars (isViolator = true) DO NOT STOP, and run the red light!
+        // When vehicleLightState === 'GREEN':
+        // - All cars DRIVE freely (stopped = false).
+        if (vehicleLightState === 'RED' && !v.isViolator && isApproachingCrosswalk) {
+          v.stopped = true;
+        } else {
+          v.stopped = false;
+        }
+
+        if (!v.stopped) {
+          v.x += v.speed;
+        }
+
+        // Out of screen cleanup
+        if (v.x < -150 || v.x > 870) {
+          vehicles.splice(i, 1);
+        }
+      }
+
+      // Auto Mode Autonomous Catching (Only active when user chooses OTONOM YZ MODU)
+      if (isAutoMode) {
+        const activeViolation = getActiveViolation();
+        if (activeViolation && !activeViolation.processed) {
+          triggerSnapshot();
+        }
+      }
+    }
+
+    // Precise Violation Evaluation Function (Grounded in Shapely intersection rules)
+    function evaluateViolation() {
+      const pOnCrosswalk = pedestrians.some(p => p.y >= SAFE_ZONE.y && p.y <= SAFE_ZONE.y + SAFE_ZONE.h);
+
+      // If light is GREEN for vehicles, vehicles have right of way (no violation)
+      if (vehicleLightState === 'GREEN') {
+        return { 
+          isViolation: false, 
+          reason: "Araçlara yeşil ışık yanıyor (Araç geçiş hakkı var, ihlal yok)", 
+          vehicle: null 
+        };
+      }
+
+      // When vehicle light is RED:
+      for (const v of vehicles) {
+        const vRight = v.x + v.w;
+        const vBottom = v.y + v.h;
+        const zRight = SAFE_ZONE.x + SAFE_ZONE.w;
+        const zBottom = SAFE_ZONE.y + SAFE_ZONE.h;
+
+        // Shapely Bounding Box Intersection
+        const intersects = (v.x < zRight && vRight > SAFE_ZONE.x && v.y < zBottom && vBottom > SAFE_ZONE.y);
+        
+        if (intersects) {
+          if (v.stopped) {
+            return { 
+              isViolation: false, 
+              reason: "Araç durma çizgisinde durdu, kırmızı ışığa riayet etti", 
+              vehicle: v 
+            };
+          }
+          if (v.processed) {
+            return { 
+              isViolation: false, 
+              reason: "Bu araca zaten ceza tutanağı düzenlendi", 
+              vehicle: v 
+            };
+          }
+          const violationDetail = pOnCrosswalk 
+            ? "Kırmızı Işık ve Yaya Güvenliği İhlali (KTK 47/1-b & 74/A)" 
+            : "Kırmızı Işık İhlali (KTK 47/1-b)";
+          return { 
+            isViolation: true, 
+            reason: violationDetail, 
+            vehicle: v 
+          };
+        }
+      }
+
+      return { 
+        isViolation: false, 
+        reason: "Güvenli alana kırmızıda dalan ihlalci araç bulunamadı", 
+        vehicle: null 
+      };
+    }
+
+    // Check if there is an active violation for drawing HUD & auto mode
+    function getActiveViolation() {
+      const evalRes = evaluateViolation();
+      return evalRes.isViolation ? evalRes.vehicle : null;
+    }
+
+    // Floating Detection Toast Controller
+    let toastTimeout = null;
+    function showDetectionToast(isSuccess, title, desc) {
+      const toast = document.getElementById('detection-result-toast');
+      const box = document.getElementById('toast-inner-box');
+      const icon = document.getElementById('toast-icon');
+      const msg = document.getElementById('toast-msg');
+
+      if (isSuccess) {
+        box.className = "px-4 py-2.5 rounded-xl bg-emerald-600/95 border-2 border-emerald-400 text-white font-mono text-xs font-bold shadow-[0_0_30px_rgba(16,185,129,0.8)] flex items-center gap-2.5 animate-bounce";
+        icon.setAttribute('data-lucide', 'check-circle');
+        msg.innerHTML = `<span>${title}</span> <span class="text-emerald-200 text-[11px] block sm:inline">(${desc})</span>`;
+      } else {
+        box.className = "px-4 py-2.5 rounded-xl bg-rose-600/95 border-2 border-rose-400 text-white font-mono text-xs font-bold shadow-[0_0_30px_rgba(244,63,94,0.8)] flex items-center gap-2.5 animate-pulse";
+        icon.setAttribute('data-lucide', 'x-circle');
+        msg.innerHTML = `<span>${title}:</span> <span class="text-rose-200 text-[11px] block sm:inline">${desc}</span>`;
+      }
+      if (window.lucide) lucide.createIcons();
+
+      toast.classList.remove('opacity-0', 'scale-95');
+      toast.classList.add('opacity-100', 'scale-100');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'scale-100');
+        toast.classList.add('opacity-0', 'scale-95');
+      }, 3000);
+    }
+
+    // Render Canvas
+    function renderSimulation() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Base background color
+      ctx.fillStyle = isNightMode ? '#070a0e' : '#0b1118';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+
+      // REAL 45-DEGREE CCTV ISOMETRIC PERSPECTIVE TRANSFORMATION
+      if (isTiltedPerspective) {
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.scale(1.0, 0.72);
+        ctx.rotate(-15 * Math.PI / 180);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+      }
+
+      // Draw extended sidewalks & road asphalt so no edges clip when tilted
+      const roadMinX = -500;
+      const roadMaxW = canvas.width + 1000;
+
+      // Sidewalks (Top & Bottom)
+      ctx.fillStyle = isNightMode ? '#1e293b' : '#334155';
+      ctx.fillRect(roadMinX, -150, roadMaxW, 230); // Top sidewalk
+      ctx.fillRect(roadMinX, 340, roadMaxW, 230);  // Bottom sidewalk
+
+      // Road Asphalt
+      ctx.fillStyle = isNightMode ? '#090e14' : '#17202a';
+      ctx.fillRect(roadMinX, 80, roadMaxW, 260);
+
+      // Road Curb Lines
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(roadMinX, 78, roadMaxW, 3);
+      ctx.fillRect(roadMinX, 339, roadMaxW, 3);
+
+      // Lane Divider Dashes
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([16, 16]);
+      ctx.beginPath();
+      ctx.moveTo(roadMinX, 210);
+      ctx.lineTo(roadMinX + roadMaxW, 210);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Zebra Crosswalk (Yaya Geçidi)
+      ctx.fillStyle = '#f8fafc';
+      for (let y = 90; y < 330; y += 28) {
+        ctx.fillRect(SAFE_ZONE.x, y, SAFE_ZONE.w, 14);
+      }
+
+      // Stop Lines (White bars before crosswalk)
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(SAFE_ZONE.x - 20, 212, 6, 126); // West lane stop line
+      ctx.fillRect(SAFE_ZONE.x + SAFE_ZONE.w + 14, 82, 6, 126); // East lane stop line
+
+      // Shapely Safe Zone Overlay (Dynamic Highlight)
+      const currentViolation = getActiveViolation();
+      const hasPedestrians = pedestrians.some(p => p.y >= SAFE_ZONE.y && p.y <= SAFE_ZONE.y + SAFE_ZONE.h);
+
+      if (currentViolation) {
+        // Red Pulsing Hazard Zone
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'rgba(244, 63, 94, 0.28)';
+        ctx.strokeRect(SAFE_ZONE.x, SAFE_ZONE.y, SAFE_ZONE.w, SAFE_ZONE.h);
+        ctx.fillRect(SAFE_ZONE.x, SAFE_ZONE.y, SAFE_ZONE.w, SAFE_ZONE.h);
+
+        // Alert Banner inside Canvas
+        document.getElementById('canvas-violation-alert').classList.remove('hidden');
+        document.getElementById('canvas-violation-text').textContent = `⚠️ İHLAL! ${currentViolation.plate} KIRMIZIDA DURMADI!`;
+      } else {
+        document.getElementById('canvas-violation-alert').classList.add('hidden');
+        // Safe Zone
+        ctx.strokeStyle = (vehicleLightState === 'RED') ? '#10b981' : 'rgba(16, 185, 129, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 6]);
+        ctx.strokeRect(SAFE_ZONE.x, SAFE_ZONE.y, SAFE_ZONE.w, SAFE_ZONE.h);
+        ctx.setLineDash([]);
+        if (vehicleLightState === 'RED') {
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.08)';
+          ctx.fillRect(SAFE_ZONE.x, SAFE_ZONE.y, SAFE_ZONE.w, SAFE_ZONE.h);
+        }
+      }
+
+      // Shapely Tag Label
+      ctx.font = '9px "JetBrains Mono", monospace';
+      ctx.fillStyle = currentViolation ? '#f43f5e' : '#10b981';
+      ctx.fillText(currentViolation ? 'SHAPELY: INTERSECTS == TRUE (İHLAL TESPİTİ)' : 'SHAPELY: GÜVENLİ ALAN [IC_BOSLUK: 15px]', SAFE_ZONE.x - 30, SAFE_ZONE.y - 6);
+
+      // Remaining Light Countdown
+      const secLeft = Math.ceil((LIGHT_DURATION - lightTimer) / 30);
+
+      // 4.1 VEHICLE TRAFFIC LIGHT (Araç Trafik Işığı: Kırmızıda araçlar durur)
+      const vLightX = SAFE_ZONE.x - 38;
+      const vLightY = 30;
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(vLightX, vLightY, 22, 44);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(vLightX, vLightY, 22, 44);
+
+      // Red bulb
+      ctx.fillStyle = (vehicleLightState === 'RED') ? '#ef4444' : '#450a0a';
+      ctx.beginPath();
+      ctx.arc(vLightX + 11, vLightY + 9, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Yellow bulb
+      ctx.fillStyle = '#713f12';
+      ctx.beginPath();
+      ctx.arc(vLightX + 11, vLightY + 22, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Green bulb
+      ctx.fillStyle = (vehicleLightState === 'GREEN') ? '#10b981' : '#064e3b';
+      ctx.beginPath();
+      ctx.arc(vLightX + 11, vLightY + 35, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vehicle Light Status Label
+      ctx.font = '8px "JetBrains Mono", monospace';
+      ctx.fillStyle = (vehicleLightState === 'RED') ? '#f87171' : '#34d399';
+      ctx.fillText(vehicleLightState === 'RED' ? `ARAÇ: KIRMIZI [${secLeft}s]` : `ARAÇ: YEŞİL [${secLeft}s]`, vLightX - 45, vLightY + 12);
+
+      // 4.2 PEDESTRIAN TRAFFIC LIGHT (Yaya Sinyali: Araç kırmızı iken yayaya yeşil)
+      const pLightX = SAFE_ZONE.x + SAFE_ZONE.w + 14;
+      const pLightY = 38;
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(pLightX, pLightY, 20, 32);
+      ctx.strokeStyle = '#475569';
+      ctx.strokeRect(pLightX, pLightY, 20, 32);
+
+      // Pedestrian Red (Stop)
+      ctx.fillStyle = (vehicleLightState === 'GREEN') ? '#ef4444' : '#450a0a';
+      ctx.beginPath();
+      ctx.arc(pLightX + 10, pLightY + 9, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Pedestrian Green (Walk)
+      ctx.fillStyle = (vehicleLightState === 'RED') ? '#10b981' : '#064e3b';
+      ctx.beginPath();
+      ctx.arc(pLightX + 10, pLightY + 23, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Pedestrian Light Label
+      ctx.fillStyle = (vehicleLightState === 'RED') ? '#34d399' : '#f87171';
+      ctx.fillText(vehicleLightState === 'RED' ? 'YAYA: YEŞİL' : 'YAYA: KIRMIZI', pLightX + 24, pLightY + 15);
+
+      // 5. Draw Pedestrians with YOLOv8 Bounding Boxes
+      pedestrians.forEach(p => {
+        // Subtle 3D shadow in 45-degree angle
+        if (isTiltedPerspective) {
+          ctx.fillStyle = 'rgba(0,0,0,0.4)';
+          ctx.beginPath();
+          ctx.ellipse(p.x, p.y + 7, p.radius, p.radius * 0.4, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Pedestrian body
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // YOLOv8 Bounding Box
+        ctx.strokeStyle = '#00f2fe';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(p.x - 10, p.y - 12, 20, 24);
+
+        // BBox Tag
+        ctx.fillStyle = '#00f2fe';
+        ctx.font = '8px "JetBrains Mono", monospace';
+        ctx.fillText(`person ${p.confidence}`, p.x - 10, p.y - 14);
+      });
+
+      // 6. Draw Vehicles with YOLOv8 & Plate Bounding Boxes
+      vehicles.forEach(v => {
+        // 3D Shadow in 45-degree mode
+        if (isTiltedPerspective) {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+          ctx.fillRect(v.x + 3, v.y + v.h - 4, v.w + 6, 8);
+        }
+
+        // Car Body
+        ctx.fillStyle = v.color;
+        ctx.beginPath();
+        ctx.roundRect(v.x, v.y, v.w, v.h, 6);
+        ctx.fill();
+
+        // 3D Roof Bevel highlight in 45-degree mode
+        if (isTiltedPerspective) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+          ctx.fillRect(v.x + 4, v.y + 2, v.w - 8, 8);
+        }
+
+        // Windshield
+        ctx.fillStyle = isNightMode ? '#38bdf8' : '#0284c7';
+        if (v.isRightToLeft) {
+          ctx.fillRect(v.x + 12, v.y + 6, 18, v.h - 12);
+        } else {
+          ctx.fillRect(v.x + v.w - 30, v.y + 6, 18, v.h - 12);
+        }
+
+        // Night Headlights Beam
+        if (isNightMode) {
+          ctx.fillStyle = 'rgba(254, 240, 138, 0.25)';
+          ctx.beginPath();
+          if (v.isRightToLeft) {
+            ctx.moveTo(v.x, v.y + 6);
+            ctx.lineTo(v.x - 90, v.y - 20);
+            ctx.lineTo(v.x - 90, v.y + v.h + 20);
+            ctx.lineTo(v.x, v.y + v.h - 6);
+          } else {
+            ctx.moveTo(v.x + v.w, v.y + 6);
+            ctx.lineTo(v.x + v.w + 90, v.y - 20);
+            ctx.lineTo(v.x + v.w + 90, v.y + v.h + 20);
+            ctx.lineTo(v.x + v.w, v.y + v.h - 6);
+          }
+          ctx.fill();
+        }
+
+        // Wheels
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(v.x + 8, v.y - 2, 14, 4);
+        ctx.fillRect(v.x + v.w - 22, v.y - 2, 14, 4);
+        ctx.fillRect(v.x + 8, v.y + v.h - 2, 14, 4);
+        ctx.fillRect(v.x + v.w - 22, v.y + v.h - 2, 14, 4);
+
+        // Stopped indicator
+        if (v.stopped) {
+          ctx.fillStyle = '#f87171';
+          ctx.font = '8px "JetBrains Mono", monospace';
+          ctx.fillText('🛑 KIRMIZIDA BEKLİYOR', v.x + 8, v.y - 12);
+        }
+
+        // YOLOv8 Vehicle Bounding Box
+        const isCurrentOffender = (v === currentViolation);
+        ctx.strokeStyle = isCurrentOffender ? '#f43f5e' : '#10b981';
+        ctx.lineWidth = isCurrentOffender ? 2 : 1.2;
+        ctx.strokeRect(v.x - 4, v.y - 4, v.w + 8, v.h + 8);
+
+        // BBox Tag Label
+        ctx.fillStyle = isCurrentOffender ? '#f43f5e' : '#10b981';
+        ctx.font = '8px "JetBrains Mono", monospace';
+        ctx.fillText(isCurrentOffender ? `VIOLATION: 0.98` : `vehicle: 0.96`, v.x - 4, v.y - 7);
+
+        // License Plate Bounding Box
+        const plateX = v.isRightToLeft ? v.x + 2 : v.x + v.w - 22;
+        const plateY = v.y + v.h / 2 - 5;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(plateX, plateY, 20, 10);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(plateX, plateY, 20, 10);
+      });
+
+      // RESTORE TRANSFORM FOR SCREEN HUD OVERLAYS
+      ctx.restore();
+
+      // Angle Watermark on Screen HUD
+      ctx.font = '9px "JetBrains Mono", monospace';
+      if (isTiltedPerspective) {
+        ctx.fillStyle = '#22d3ee';
+        ctx.fillText('📐 AÇI: 45° ÇAPRAZ CCTV (PITCH/TILT AKTİF)', 16, canvas.height - 14);
+      } else {
+        ctx.fillStyle = '#34d399';
+        ctx.fillText('📐 AÇI: 90° DÜZ NADİR (ORTOGONAL)', 16, canvas.height - 14);
+      }
+    }
+
+    // 4. Shutter Trigger & OCR Execution
+    function triggerSnapshot() {
+      initAudio();
+      playShutterSound();
+
+      // Screen Flash effect
+      const screen = document.getElementById('trafficCanvas');
+      screen.style.filter = 'brightness(2.2)';
+      setTimeout(() => screen.style.filter = '', 100);
+
+      const evalResult = evaluateViolation();
+
+      if (evalResult.isViolation) {
+        // BAŞARILI İHLAL TESPİTİ
+        const violator = evalResult.vehicle;
+        playSuccessChime();
+        scoreViolations++;
+        totalFineAmount += 3135; // 3.135 TL KTK 47/1-b & 74/A Cezası
+        violator.processed = true;
+
+        // Update Scores
+        document.getElementById('stat-violations').textContent = scoreViolations;
+        document.getElementById('stat-total-fines').textContent = totalFineAmount.toLocaleString('tr-TR') + ' ₺';
+        updateReputation();
+
+        // Show Toast Feedback
+        showDetectionToast(true, `BAŞARILI TESPİT! ${violator.plate}`, "+3.135 ₺ Ceza Kesildi");
+
+        // Run OCR Step Animation
+        executeOcrPipeline(violator, true, evalResult.reason);
+
+        // Add to Ledger (Strictly last 3 violations saved)
+        addViolationToLedger(violator);
+      } else {
+        // BAŞARISIZ TESPİT (HATALI ALARM)
+        playBuzzer();
+        scoreFalseAlarms++;
+        document.getElementById('stat-false-alarms').textContent = scoreFalseAlarms;
+        updateReputation();
+
+        // Show Toast Feedback with exact reason
+        showDetectionToast(false, "BAŞARISIZ TESPİT", evalResult.reason);
+
+        // Run OCR pipeline indicating failure and exact reason
+        executeOcrPipeline(null, false, evalResult.reason);
+      }
+    }
+
+    function updateReputation() {
+      const total = scoreViolations + scoreFalseAlarms;
+      const rep = total === 0 ? 100 : Math.round((scoreViolations / total) * 100);
+      const repEl = document.getElementById('game-reputation');
+      repEl.textContent = `GÜVENİLİRLİK: %${rep}`;
+      if (rep < 70) {
+        repEl.className = "px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold";
+      } else {
+        repEl.className = "px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold";
+      }
+    }
+
+    function executeOcrPipeline(vehicle, isSuccess, reason) {
+      const statusPill = document.getElementById('ocr-status-pill');
+      const s1 = document.getElementById('ocr-stage-1');
+      const s2 = document.getElementById('ocr-stage-2');
+      const plateResult = document.getElementById('ocr-plate-result');
+      const confBadge = document.getElementById('ocr-confidence-badge');
+      const shapelyStatus = document.getElementById('ocr-shapely-status');
+
+      statusPill.textContent = "İŞLENİYOR...";
+      statusPill.className = "text-[9px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse";
+
+      s1.textContent = isSuccess ? "BBox Kesildi (cv2.crop)" : "İşlem Atlandı";
+      s1.className = isSuccess ? "text-cyan-400 font-bold" : "text-slate-500 font-bold";
+
+      setTimeout(() => {
+        s2.textContent = isSuccess ? "3x Büyütme + Kernel [0,-1,0]" : "Gereksiz (İhlal Yok)";
+        s2.className = isSuccess ? "text-amber-400 font-bold" : "text-slate-500 font-bold";
+      }, 120);
+
+      setTimeout(() => {
+        if (isSuccess) {
+          // Perspective effect: if tilted, OCR confidence is lower due to perspective distortion
+          const conf = isTiltedPerspective ? "%74.2 (Açı Bozulması)" : "%94.5 (EasyOCR)";
+          plateResult.textContent = vehicle.plate;
+          plateResult.className = "text-sm font-bold text-emerald-300 tracking-widest";
+          confBadge.textContent = conf;
+          confBadge.className = isTiltedPerspective ? "px-2 py-1 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold"
+                                                    : "px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold";
+          shapelyStatus.textContent = "İHLAL KESİŞİMİ: TRUE (KIRMIZIDA GEÇTİ)";
+          shapelyStatus.className = "text-rose-400 font-bold";
+          statusPill.textContent = "BAŞARILI TESPİT (200 OK)";
+          statusPill.className = "text-[9px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold";
+        } else {
+          plateResult.textContent = `BAŞARISIZ TESPİT`;
+          plateResult.className = "text-xs font-bold text-rose-400 tracking-wide";
+          confBadge.textContent = "Hatalı Alarm";
+          confBadge.className = "px-2 py-1 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold";
+          shapelyStatus.textContent = `ŞAPELY: FALSE (${reason})`;
+          shapelyStatus.className = "text-slate-400 font-bold";
+          statusPill.textContent = "BAŞARISIZ TESPİT (REDDEDİLDİ)";
+          statusPill.className = "text-[9px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold";
+        }
+      }, 300);
+    }
+
+    // 5. VIOLATION LEDGER - STRICTLY LIMITED TO MAXIMUM LAST 3 PLATES
+    let violationLedger = [];
+    const MAX_LEDGER_ITEMS = 3;
+
+    function addViolationToLedger(vehicle) {
+      const time = new Date().toLocaleTimeString('tr-TR');
+      // Add new violation at the beginning
+      violationLedger.unshift({
+        plate: vehicle.plate,
+        make: vehicle.make,
+        model: vehicle.model,
+        time: time,
+        fine: '3.135 ₺'
+      });
+
+      // Keep strictly the last 3 records, discard all older ones!
+      if (violationLedger.length > MAX_LEDGER_ITEMS) {
+        violationLedger = violationLedger.slice(0, MAX_LEDGER_ITEMS);
+      }
+
+      renderViolationLedger();
+    }
+
+    function renderViolationLedger() {
+      const container = document.getElementById('violation-ledger-list');
+      if (!container) return;
+
+      if (violationLedger.length === 0) {
+        container.innerHTML = `
+          <div id="ledger-empty-msg" class="py-6 text-center text-slate-500 text-[10px]">
+            Henüz ceza kesilmedi. Kırmızıda durmayan veya yayaya yol vermeyen araçları yakalayın! (Maksimum son 3 kayıt saklanır)
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = violationLedger.map((item, index) => `
+        <div class="p-2.5 rounded-xl bg-dark-950 border border-rose-500/30 flex items-center justify-between text-[10px] animate-fade-in shadow-inner">
+          <div class="flex items-center gap-2.5">
+            <span class="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold text-[9px]">#${index + 1}</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+            <div>
+              <span class="font-bold text-white tracking-wider block text-xs font-mono">${item.plate}</span>
+              <span class="text-slate-400 text-[9px]">${item.make} • Kırmızı Işık &amp; Yaya İhlali</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-amber-400 font-bold block">${item.fine}</span>
+            <span class="text-slate-500 text-[9px]">${item.time}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Direct Viewport Click Shutter: user can click anywhere on the canvas to trigger photo
+    canvas.addEventListener('click', (e) => {
+      triggerSnapshot();
+    });
+
+    // Keyboard Spacebar Listener
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        const simRect = document.getElementById('simulator').getBoundingClientRect();
+        if (simRect.top < window.innerHeight && simRect.bottom > 0) {
+          e.preventDefault();
+          triggerSnapshot();
+        }
+      }
+    });
+
+    // Real-Time Clock
+    setInterval(() => {
+      const clockEl = document.getElementById('hud-clock');
+      if (clockEl) {
+        clockEl.textContent = new Date().toLocaleTimeString('tr-TR');
+      }
+    }, 1000);
+
+    // Main Simulation Ticker (24-30 FPS Animation)
+    function mainLoop() {
+      updateSimulation();
+      renderSimulation();
+      requestAnimationFrame(mainLoop);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      renderViolationLedger();
+      requestAnimationFrame(mainLoop);
+    });
+  </script>
+</body>
+</html>

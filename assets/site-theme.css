@@ -289,7 +289,7 @@ html.light-theme body.site-theme #main-nav > div > a > div:first-child {
   border-color: #fed7aa !important;
 }
 html.light-theme body.site-theme #main-nav button:not(.site-theme-toggle) {
-  background: #f1f5f9 !important;
+  background: #fff !important;
   border-color: #cbd5e1 !important;
   color: #334155 !important;
 }

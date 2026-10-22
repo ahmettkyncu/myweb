@@ -83,8 +83,10 @@
       transition: opacity 0.3s ease;
     }
   </style>
+  <link rel="stylesheet" href="assets/site-theme.css" />
+  <script src="assets/theme-toggle.js"></script>
 </head>
-<body class="bg-dark-950 text-slate-300 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden min-h-screen">
+<body class="site-theme bg-dark-950 text-slate-300 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden min-h-screen">
 
   <!-- ========================================================================= -->
   <!-- 1. NAVIGATION BAR -->
@@ -129,7 +131,7 @@
     <div id="hero-bg-container" class="absolute inset-0 w-full h-full z-0 overflow-hidden">
       <!-- Arka Plan Görseli -->
       <img id="hero-bg-image" 
-           src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=85" 
+           src="assets/hero-bg.jpg" 
            alt="Interactive Portfolio Background" 
            class="w-full h-full object-cover object-center select-none scale-105 transition-transform duration-1000" />
       
@@ -379,7 +381,7 @@
     // =========================================================================
     const CONFIG = {
       // 1. Arka plandaki yüksek çözünürlüklü görsel
-      bgImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=85',
+      bgImage: 'assets/hero-bg.jpg',
       
       // 2. Altıgen petek boyutu (yarıçap piksel)
       hexRadius: 38,

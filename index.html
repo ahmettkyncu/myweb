@@ -131,8 +131,10 @@
       -webkit-text-fill-color: transparent;
     }
   </style>
+  <link rel="stylesheet" href="assets/site-theme.css" />
+  <script src="assets/theme-toggle.js"></script>
 </head>
-<body class="bg-dark-950 text-slate-300 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden min-h-screen">
+<body class="site-theme bg-dark-950 text-slate-300 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden min-h-screen">
 
 <!-- ========================================================================= -->
 <!-- 1. HAREKETLİ THREE.JS 3D CYBER ARKA PLAN (TÜM SAYFA ARKASINDA AKTİF) -->
@@ -414,7 +416,7 @@
 </a>
 
 <!-- Desktop Nav Links -->
-<nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+<nav class="hidden md:flex items-center gap-7 text-sm font-medium">
 <a class="text-slate-300 hover:text-cyan-400 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-cyan-400 hover:after:w-full after:transition-all" href="#about" data-i18n="nav_about">Hakkımda</a>
 <a class="text-slate-300 hover:text-cyan-400 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-cyan-400 hover:after:w-full after:transition-all" href="#experience" data-i18n="nav_experience">Deneyim</a>
 <a class="text-slate-300 hover:text-cyan-400 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-cyan-400 hover:after:w-full after:transition-all" href="#projects" data-i18n="nav_projects">Projeler</a>
@@ -431,10 +433,10 @@
 </div>
 
 <div class="hidden lg:flex items-center gap-2 pl-2 border-l border-white/10">
-<a aria-label="GitHub" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all" href="https://github.com/ahmetkoyuncu" rel="noopener noreferrer" target="_blank">
+<a aria-label="GitHub" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all" href="https://github.com/ahmettkyncu" rel="noopener noreferrer" target="_blank">
 <i class="w-4 h-4" data-lucide="github"></i>
 </a>
-<a aria-label="LinkedIn" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all" href="https://linkedin.com/in/ahmetkoyuncu" rel="noopener noreferrer" target="_blank">
+<a aria-label="LinkedIn" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all" href="https://www.linkedin.com/in/ahmet-koyuncu-94ba153a1/" rel="noopener noreferrer" target="_blank">
 <i class="w-4 h-4" data-lucide="linkedin"></i>
 </a>
 </div>
@@ -451,17 +453,16 @@
 <!-- ========================================================================= -->
 <section class="relative min-h-screen flex items-center justify-center px-6 pt-20 overflow-hidden" id="hero">
   
-  <!-- KATMAN 1 (ALT KATMAN): YÜKSEK ÇÖZÜNÜRLÜKLÜ REVEAL GÖRSELİ -->
-  <div id="hero-bg-container" class="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-    <img id="hero-bg-image" 
-         src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2400&q=85" 
-         alt="Portfolio Background" 
-         class="w-full h-full object-cover object-center select-none scale-105 transition-transform duration-1000" />
-    <div id="hero-bg-dimmer" class="absolute inset-0 bg-dark-950/45 pointer-events-none"></div>
+  <!-- KATMAN 1 (ALT KATMAN): SCANLINE BLOOM WEBGL CANVAS ARKA PLANI -->
+  <div id="hero-scanline-container" class="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
+    <canvas id="hero-scanline-canvas" class="w-full h-full block"></canvas>
+    <!-- Karartma Katmanları: Başlık ve buton kontrastını mükemmelleştirir -->
+    <div id="hero-bg-dimmer" class="absolute inset-0 bg-dark-950/20 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-dark-950/40 via-transparent to-dark-950 pointer-events-none"></div>
   </div>
 
-  <!-- KATMAN 2 (ORTA KATMAN): INTERAKTIF CANVAS PETEK MASKESİ -->
-  <canvas id="hexagon-canvas" class="absolute inset-0 w-full h-full z-10 pointer-events-none block"></canvas>
+  <!-- KATMAN 2 (OPSİYONEL YEDEK PETEK MASKESİ - GİZLİ) -->
+  <canvas id="hexagon-canvas" class="absolute inset-0 w-full h-full z-10 pointer-events-none hidden"></canvas>
 
   <!-- KATMAN 3 (ÜST KATMAN): HERO METİNLERİ VE AKSİYON BUTONLARI -->
   <div class="relative z-20 max-w-4xl mx-auto text-center flex flex-col items-center pointer-events-none">
@@ -508,10 +509,18 @@
       </a>
     </div>
 
-    <!-- Hexagon Reveal Hint Pill -->
-    <div class="mt-8 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-dark-900/80 border border-white/10 text-xs font-mono text-slate-400 backdrop-blur-md pointer-events-auto shadow-sm">
-      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
-      <span data-i18n="hero_reveal_hint">İmleci gezdirerek arka planı keşfedin</span>
+    <!-- Scanline Bloom Interactive Hint Pill -->
+    <div class="mt-8 inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-dark-900/80 border border-cyan-500/25 text-xs font-mono text-slate-300 backdrop-blur-md pointer-events-auto shadow-lg">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+      </span>
+      <span class="text-white font-medium">Scanline Bloom CRT:</span>
+      <span data-i18n="hero_reveal_hint">İmleci gezdirerek mercek ve CRT etkisini keşfedin</span>
+      <button id="hero-rebloom-btn" type="button" class="ml-1 px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 text-[11px] transition-all flex items-center gap-1 font-mono cursor-pointer" title="Yeniden Tara (Rebloom)">
+        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+        <span>Yeniden Tara</span>
+      </button>
     </div>
 
     <!-- Metric highlights -->
@@ -1100,6 +1109,42 @@
   </div>
 </div>
 
+<!-- PROJECT 5: Floating Memories (Photo Puzzle Gift App) -->
+<div class="glass-card rounded-2xl p-7 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 relative overflow-hidden border-fuchsia-500/20 hover:border-fuchsia-400/50">
+  <div class="absolute -top-12 -right-12 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-2xl group-hover:bg-fuchsia-500/20 transition-all pointer-events-none"></div>
+  <div>
+    <div class="flex items-center justify-between mb-4">
+      <div class="w-12 h-12 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-300 group-hover:scale-110 transition-all shadow-[0_0_15px_rgba(217,70,239,0.15)]">
+        <i class="w-6 h-6" data-lucide="heart-handshake"></i>
+      </div>
+      <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-medium bg-fuchsia-950/60 border border-fuchsia-700/60 text-fuchsia-300" data-i18n="p5_badge">Flutter • Etkileşimli Hediye</span>
+    </div>
+    <h4 class="text-xl font-bold text-white group-hover:text-fuchsia-300 transition-colors mb-1.5" data-i18n="p5_title"><a href="project-floating-memories.html">Floating Memories</a></h4>
+    <div class="text-xs font-mono text-slate-400 mb-4 flex items-center gap-1.5"><i class="w-3.5 h-3.5 text-fuchsia-400" data-lucide="puzzle"></i><span data-i18n="p5_sub">Fotoğraflardan kişisel yapboz hediyeleri</span></div>
+    <div class="my-4 p-4 rounded-xl bg-dark-950/90 border border-fuchsia-500/20 font-mono">
+      <div class="flex items-center justify-between text-[10px] mb-3"><span class="text-fuchsia-300" data-i18n="p5_demo_label">ANINI HEDİYEYE DÖNÜŞTÜR</span><span class="text-cyan-300">FLAME + FORGE2D</span></div>
+      <div class="grid grid-cols-3 gap-1.5 max-w-[180px] mx-auto" aria-hidden="true">
+        <div class="h-12 rounded-lg bg-fuchsia-400/20 border border-fuchsia-300/40 flex items-center justify-center text-fuchsia-200">✦</div>
+        <div class="h-12 rounded-lg bg-cyan-400/15 border border-cyan-300/30 flex items-center justify-center text-cyan-200">♡</div>
+        <div class="h-12 rounded-lg bg-indigo-400/20 border border-indigo-300/40 flex items-center justify-center text-indigo-200">✧</div>
+        <div class="h-12 rounded-lg bg-indigo-400/15 border border-indigo-300/30 flex items-center justify-center text-indigo-200">✦</div>
+        <div class="h-12 rounded-lg bg-fuchsia-400/25 border border-fuchsia-300/50 flex items-center justify-center text-white">?</div>
+        <div class="h-12 rounded-lg bg-cyan-400/20 border border-cyan-300/40 flex items-center justify-center text-cyan-200">♡</div>
+      </div>
+      <div class="text-center text-[10px] text-slate-400 mt-3" data-i18n="p5_demo_caption">Parçaları birleştir, gizli mesajı aç</div>
+    </div>
+    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4" data-i18n="p5_desc">Kullanıcı kendi fotoğrafını ve kişisel mesajını etkileşimli bir yapboz hediyesine dönüştürür. Sürüklenip süzülen parçalar Flame ve Forge2D fiziğiyle çalışır; hazırlanan sürpriz bağlantı üzerinden paylaşılır, alıcı yapbozu tamamlayınca mesajı açar.</p>
+    <div class="space-y-1.5 mb-5 text-xs text-slate-400 font-mono">
+      <div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-fuchsia-300" data-lucide="check"></i><span data-i18n="p5_h1">Fotoğraf, mesaj ve zorluk seviyesi özelleştirme</span></div>
+      <div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-fuchsia-300" data-lucide="check"></i><span data-i18n="p5_h2">Paylaşılabilir deep link ve yerel anı kasası</span></div>
+    </div>
+  </div>
+  <div class="pt-4 border-t border-white/[0.08] flex items-center justify-between gap-3">
+    <div class="flex flex-wrap gap-1.5"><span class="px-2 py-0.5 rounded bg-dark-900 text-[10px] font-mono text-cyan-300 border border-cyan-500/20">Flutter</span><span class="px-2 py-0.5 rounded bg-dark-900 text-[10px] font-mono text-fuchsia-300 border border-fuchsia-500/20">Flame</span><span class="px-2 py-0.5 rounded bg-dark-900 text-[10px] font-mono text-slate-300 border border-white/5">Forge2D</span><span class="px-2 py-0.5 rounded bg-dark-900 text-[10px] font-mono text-slate-300 border border-white/5">Riverpod</span></div>
+    <a href="project-floating-memories.html" class="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/30 text-fuchsia-300 hover:bg-fuchsia-400 hover:text-dark-950 transition-all flex items-center justify-center font-mono font-bold text-xl shrink-0" title="Projeyi İncele" aria-label="Floating Memories projesini incele"><span>&gt;</span></a>
+  </div>
+</div>
+
 </div>
 </div>
 </section>
@@ -1126,35 +1171,35 @@
 <h4 class="text-lg font-semibold text-white" data-i18n="contact_channels">Doğrudan İletişim Kanalları</h4>
 
 <!-- Email Card -->
-<a class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-cyan-500/40 hover:bg-cyan-950/20 transition-all group" href="mailto:ahmetkoyuncu.dev@gmail.com">
+<a class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-cyan-500/40 hover:bg-cyan-950/20 transition-all group" href="mailto:ahmetttkoyncu@gmail.com">
 <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0 group-hover:scale-105 transition-transform">
 <i class="w-5 h-5" data-lucide="mail"></i>
 </div>
 <div class="overflow-hidden">
 <div class="text-xs font-mono text-slate-400 uppercase" data-i18n="contact_email_label">E-posta Adresi</div>
-<div class="text-sm font-medium text-white group-hover:text-cyan-300 transition-colors truncate">ahmetkoyuncu.dev@gmail.com</div>
+<div class="text-sm font-medium text-white group-hover:text-cyan-300 transition-colors truncate">ahmetttkoyncu@gmail.com</div>
 </div>
 </a>
 
 <!-- LinkedIn -->
-<a class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-blue-500/40 hover:bg-blue-950/20 transition-all group" href="https://linkedin.com/in/ahmetkoyuncu" rel="noopener noreferrer" target="_blank">
+<a class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-blue-500/40 hover:bg-blue-950/20 transition-all group" href="https://www.linkedin.com/in/ahmet-koyuncu-94ba153a1/" rel="noopener noreferrer" target="_blank">
 <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 group-hover:scale-105 transition-transform">
 <i class="w-5 h-5" data-lucide="linkedin"></i>
 </div>
 <div>
 <div class="text-xs font-mono text-slate-400 uppercase" data-i18n="contact_linkedin_label">LinkedIn Profili</div>
-<div class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">linkedin.com/in/ahmetkoyuncu</div>
+<div class="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">linkedin.com/in/ahmet-koyuncu-94ba153a1</div>
 </div>
 </a>
 
 <!-- GitHub -->
-<a class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-slate-400/40 hover:bg-white/5 transition-all group" href="https://github.com/ahmetkoyuncu" rel="noopener noreferrer" target="_blank">
+<a class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-white/[0.06] hover:border-slate-400/40 hover:bg-white/5 transition-all group" href="https://github.com/ahmettkyncu" rel="noopener noreferrer" target="_blank">
 <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 shrink-0 group-hover:scale-105 transition-transform">
 <i class="w-5 h-5" data-lucide="github"></i>
 </div>
 <div>
 <div class="text-xs font-mono text-slate-400 uppercase" data-i18n="contact_github_label">GitHub Projeleri</div>
-<div class="text-sm font-medium text-white group-hover:text-slate-200 transition-colors">github.com/ahmetkoyuncu</div>
+<div class="text-sm font-medium text-white group-hover:text-slate-200 transition-colors">github.com/ahmettkyncu</div>
 </div>
 </a>
 
@@ -1240,7 +1285,7 @@
       hero_btn_projects: "Projeleri Gör",
       hero_btn_contact: "İletişime Geç",
       hero_btn_bio: "Özgeçmiş",
-      hero_reveal_hint: "İmleci gezdirerek arka planı keşfedin",
+      hero_reveal_hint: "İmleci gezdirerek Scanline Bloom CRT merceğini ve yırtılma etkisini keşfedin",
       hero_stat_core: "Temel Uzmanlık",
       hero_stat_vision: "Görü Hattı",
       hero_stat_realtime: "Gerçek Zamanlı",
@@ -1312,6 +1357,15 @@
       p4_h1: "Flame 2D loop + ValueNotifier reaktif durum yönetimi",
       p4_h2: "Çoklu slotlu (Multi-slot) JSON save/load serileştirmesi",
       p4_action: "Simülatörü İncele",
+
+      p5_badge: "Flutter • Etkileşimli Hediye",
+      p5_title: "<a href=\"project-floating-memories.html\">Floating Memories</a>",
+      p5_sub: "Fotoğraflardan kişisel yapboz hediyeleri",
+      p5_demo_label: "ANINI HEDİYEYE DÖNÜŞTÜR",
+      p5_demo_caption: "Parçaları birleştir, gizli mesajı aç",
+      p5_desc: "Kullanıcı kendi fotoğrafını ve kişisel mesajını etkileşimli bir yapboz hediyesine dönüştürür. Sürüklenip süzülen parçalar Flame ve Forge2D fiziğiyle çalışır; hazırlanan sürpriz bağlantı üzerinden paylaşılır, alıcı yapbozu tamamlayınca mesajı açar.",
+      p5_h1: "Fotoğraf, mesaj ve zorluk seviyesi özelleştirme",
+      p5_h2: "Paylaşılabilir deep link ve yerel anı kasası",
       
       contact_tag: "03. İŞ BİRLİĞİ & İLETİŞİM",
       contact_title: "Birlikte Harika Bir Şey İnşa Edelim",
@@ -1353,7 +1407,7 @@
       hero_btn_projects: "View Projects",
       hero_btn_contact: "Contact Me",
       hero_btn_bio: "Background",
-      hero_reveal_hint: "Move cursor to reveal background",
+      hero_reveal_hint: "Move cursor to explore Scanline Bloom CRT lens and glitch effect",
       hero_stat_core: "Primary Core",
       hero_stat_vision: "Vision Pipeline",
       hero_stat_realtime: "Real-Time",
@@ -1425,6 +1479,15 @@
       p4_h1: "Flame 2D loop + ValueNotifier reactive state management",
       p4_h2: "Robust multi-slot JSON game state persistence",
       p4_action: "Explore Simulator",
+
+      p5_badge: "Flutter • Interactive Gifting",
+      p5_title: "<a href=\"project-floating-memories.html\">Floating Memories</a>",
+      p5_sub: "Personalized photo puzzle gifts",
+      p5_demo_label: "TURN A MEMORY INTO A GIFT",
+      p5_demo_caption: "Fit the pieces to reveal the hidden message",
+      p5_desc: "Turn a personal photo and message into an interactive puzzle gift. Pieces float and move with Flame and Forge2D physics; share the surprise through a deep link, and the recipient unlocks the message by completing the puzzle.",
+      p5_h1: "Custom photos, messages, and puzzle difficulty",
+      p5_h2: "Shareable deep links and a local memory vault",
       
       contact_tag: "03. COLLABORATION & INQUIRIES",
       contact_title: "Let's Build Something Exceptional",
@@ -1504,216 +1567,425 @@
 </script>
 
 <!-- ========================================================================= -->
-<!-- 2. HEXAGON REVEAL ENGINE FOR HERO SECTION -->
+<!-- 2. SCANLINE BLOOM WEBGL ENGINE FOR HERO SECTION -->
 <!-- ========================================================================= -->
 <script>
-  const HEX_CONFIG = {
-    hexRadius: 38,
-    mouseRadius: 180,
-    lerpSpeed: 0.08,
-    revealMode: 'both',
-    hexFillColor: '#060709',
-    hexStrokeColor: '#00f2fe',
-    hexStrokeAlpha: 0.22,
-    hexStrokeWidth: 1.0,
-    activeGlowColor: '#00f2fe',
-    activeGlowAlpha: 0.65
-  };
+(function() {
+  const canvas = document.getElementById('hero-scanline-canvas');
+  if (!canvas) return;
 
-  const hexCanvas = document.getElementById('hexagon-canvas');
-  const hexCtx = hexCanvas.getContext('2d');
   const heroEl = document.getElementById('hero');
+  const rebloomBtn = document.getElementById('hero-rebloom-btn');
 
-  let hexList = [];
-  let hexDpr = window.devicePixelRatio || 1;
-  let heroW = 0;
-  let heroH = 0;
+  // WebGL 1 context
+  const gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false });
+  if (!gl) {
+    console.warn('WebGL not supported for Scanline Bloom');
+    return;
+  }
 
-  const hexMouse = {
-    x: -9999,
-    y: -9999,
-    targetX: -9999,
-    targetY: -9999,
-    isActive: false
+  const VERT = `
+attribute vec2 a_position;
+void main() {
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}
+`;
+
+  const FRAG = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
+uniform sampler2D u_texA;
+uniform sampler2D u_texB;
+uniform vec4 u_scene;
+uniform vec4 u_pointer;
+uniform vec4 u_print;
+uniform vec4 u_fx;
+uniform vec4 u_frame;
+uniform vec4 u_post;
+uniform vec3 u_ink;
+uniform vec3 u_hot;
+uniform vec3 u_bg;
+uniform vec3 u_frameColor;
+
+float hash(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+    mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+    u.y);
+}
+
+vec2 cover(vec2 uv, float texAspect) {
+  float ca = u_scene.x / u_scene.y;
+  vec2 s = ca > texAspect ? vec2(1.0, texAspect / ca) : vec2(ca / texAspect, 1.0);
+  return clamp((uv - 0.5) * s + 0.5, 0.0, 1.0);
+}
+
+float scanned(float fromTop, float row, float progress) {
+  float front = progress * 1.2 - 0.1;
+  return step(fromTop + (hash(vec2(row, 3.7)) - 0.5) * 0.05, front);
+}
+
+void main() {
+  vec2 res = u_scene.xy;
+  float time = u_scene.z;
+  float dpr = u_scene.w;
+  vec2 frag = gl_FragCoord.xy;
+  vec2 uv = frag / res;
+  float fromTop = 1.0 - uv.y;
+
+  float sp = max(u_print.x, 1.5) * dpr;
+  vec2 pd = (frag - u_pointer.xy) / dpr;
+  float R = max(u_fx.x, 1.0);
+  float lens = u_pointer.z * exp(-dot(pd, pd) / (R * R)) * step(1.0, u_fx.x);
+
+  float ly = frag.y + u_fx.w * dpr + lens * sp * 1.8;
+  float row = floor(ly / sp);
+  float band = floor(frag.y / (sp * 3.0));
+
+  vec2 s = uv;
+  s += u_print.w * 0.004 * vec2(
+    sin(uv.y * 7.0 + time * 0.8) + 0.5 * sin(uv.y * 17.0 - time * 1.3),
+    0.6 * sin(uv.x * 5.0 + time * 0.6));
+  s -= (frag - u_pointer.xy) / res * lens * 0.4;
+  float tick = floor(time * 9.0);
+  float tear = u_pointer.w;
+  float torn = step(1.0 - tear * 0.45, hash(vec2(band, tick)));
+  s.x += (hash(vec2(band + 11.0, tick)) - 0.5) * tear * 0.09 * torn;
+
+  float tone = texture2D(u_texA, cover(s, u_frame.x)).r;
+  float swapping = step(u_fx.y, 0.999);
+  if (swapping > 0.5) {
+    float toneB = texture2D(u_texB, cover(s, u_frame.y)).r;
+    tone = mix(tone, toneB, scanned(fromTop, row, u_fx.y));
+  }
+  tone *= scanned(fromTop, row, u_fx.z);
+  tone = clamp((tone - 0.03) * 1.12, 0.0, 1.0);
+  tone = min(1.0, tone + lens * 0.14 * step(0.02, tone));
+
+  float field = noise(uv * vec2(2.2, 2.8) + u_frame.w * 1.37);
+  float m = smoothstep(0.5, 0.18, uv.y + (field - 0.5) * 0.55);
+  m = clamp(m * min(u_print.y, 1.0) + max(u_print.y - 1.0, 0.0), 0.0, 1.0);
+  m = mix(m, 1.0 - m, lens);
+
+  float across = abs(fract(ly / sp) - 0.5) * 2.0;
+  float rag = (noise(vec2(frag.x / (dpr * 2.5), row * 1.7)) - 0.5) * 0.45;
+  float th = clamp(pow(tone, 0.8) * 1.05 + rag * tone, 0.0, 1.0);
+  float aa = 1.4 / sp;
+  float lines = 1.0 - smoothstep(th - aa, th + aa, across);
+  float dotPx = max(1.0, floor(u_print.z * dpr + 0.5));
+  vec2 cell = floor(frag / dotPx);
+  lines *= step(0.1, hash(cell + 7.3)) * step(0.015, tone);
+
+  float boil = floor(time * 10.0) * step(0.25, lens);
+  float stipple = step(hash(cell + boil * vec2(17.0, 31.0)), pow(tone, 1.3) * 1.04);
+
+  float lit = hash(cell + 91.0) < m ? stipple : lines;
+
+  float grain = u_post.x;
+  vec3 paper = u_bg * (1.0 - grain * 0.35 + grain * 0.7 * hash(cell + 5.0));
+  paper += u_bg * (noise(frag / (dpr * 40.0)) - 0.5) * grain * 0.6;
+  paper += u_ink * tone * 0.1;
+  if (u_frame.z > 0.0) {
+    vec2 edge = min(frag, res - frag) / dpr;
+    float d = abs(min(edge.x, edge.y) - u_frame.z);
+    float inside = step(u_frame.z - 1.0, min(edge.x, edge.y));
+    paper = mix(paper, u_frameColor, (1.0 - smoothstep(0.5, 1.3, d)) * inside * 0.9);
+  }
+
+  vec3 ink = mix(u_ink * 0.5, u_ink, smoothstep(0.08, 0.55, tone));
+  ink = mix(ink, u_hot, smoothstep(0.7, 1.0, tone) * 0.75 + lens * 0.15);
+  vec3 col = mix(paper, ink, lit);
+
+  float introFront = u_fx.z * 1.2 - 0.1;
+  float swapFront = u_fx.y * 1.2 - 0.1;
+  col += u_hot * 0.55 * lines * exp(-abs(fromTop - introFront) * 60.0) * step(u_fx.z, 0.999);
+  col += u_hot * 0.55 * lines * exp(-abs(fromTop - swapFront) * 60.0) * swapping;
+
+  float ringD = abs(length(pd) - R * 0.9);
+  float dash = step(0.5, fract(atan(pd.y, pd.x) * 3.8197 + time * 0.15));
+  float ring = u_pointer.z * (1.0 - smoothstep(0.4, 1.2, ringD)) * dash * step(1.0, u_fx.x);
+  col = mix(col, u_hot, ring * 0.75);
+
+  float vd = length(uv - 0.5) * 1.41421356;
+  col *= 1.0 - u_post.y * smoothstep(0.4, 1.05, vd);
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+}
+`;
+
+  function compileShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      console.warn(gl.getShaderInfoLog(s));
+      gl.deleteShader(s);
+      return null;
+    }
+    return s;
+  }
+
+  const vShader = compileShader(gl.VERTEX_SHADER, VERT);
+  const fShader = compileShader(gl.FRAGMENT_SHADER, FRAG);
+  if (!vShader || !fShader) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vShader);
+  gl.attachShader(prog, fShader);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.warn(gl.getProgramInfoLog(prog));
+    return;
+  }
+
+  const triangleBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, triangleBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const posLoc = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+  gl.useProgram(prog);
+
+  const u = (name) => gl.getUniformLocation(prog, name);
+  const loc = {
+    texA: u('u_texA'),
+    texB: u('u_texB'),
+    scene: u('u_scene'),
+    pointer: u('u_pointer'),
+    print: u('u_print'),
+    fx: u('u_fx'),
+    frame: u('u_frame'),
+    post: u('u_post'),
+    ink: u('u_ink'),
+    hot: u('u_hot'),
+    bg: u('u_bg'),
+    frameColor: u('u_frameColor'),
+  };
+  gl.uniform1i(loc.texA, 0);
+  gl.uniform1i(loc.texB, 1);
+
+  function hexToRgb(hex) {
+    let h = hex.trim().replace(/^#/, '');
+    if (h.length === 3) h = h.replace(/./g, '$&$&');
+    const n = parseInt(h, 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  }
+
+  const ease = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
+
+  function makeTexture() {
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+    return tex;
+  }
+
+  let texA = makeTexture();
+  let texB = makeTexture();
+  let aspectA = 1.0;
+  let aspectB = 1.0;
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+  function upload(tex, source) {
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+  }
+
+  // Load Neural Network uploaded background
+  const heroImage = new Image();
+  heroImage.crossOrigin = 'anonymous';
+  heroImage.decoding = 'async';
+  heroImage.onload = () => {
+    upload(texA, heroImage);
+    aspectA = heroImage.naturalWidth / Math.max(1, heroImage.naturalHeight);
+    upload(texB, heroImage);
+    aspectB = aspectA;
+    introStart = performance.now();
+    kick();
+  };
+  heroImage.src = 'assets/hero-bg.jpg';
+
+  // Pointer state
+  const pointer = { x: 0, y: 0, inside: false, speed: 0, lastX: 0, lastY: 0, lastT: 0 };
+  let presence = 0;
+  let tear = 0;
+  let time = 0;
+  let scan = 0;
+  let last = 0;
+  let raf = 0;
+  let introStart = -1;
+  let swapStart = -1;
+
+  const INTRO_MS = 1600;
+  const REBLOOM_MS = 1200;
+
+  // Settings tuned for the Hero section
+  const settings = {
+    ink: '#06b6d4',          // Cyber Camgöbeği (Cyan)
+    highlight: '#a5f3fc',    // Glow Cyan Highlight
+    background: '#030712',   // Pitch Deep Black
+    lineSpacing: 4.5,
+    dotSize: 1.6,
+    lensRadius: 180,
+    glitch: 0.28,
+    sway: 0.8,
+    scanSpeed: 4.5,
+    grain: 0.25,
+    vignette: 0.38,
+    mode: 1,                 // 1 = mixed (lines top, stipple bottom)
+    frameInset: 0,           // No frame inside hero
+    paused: false
   };
 
-  class HexagonItem {
-    constructor(cx, cy, radius) {
-      this.cx = cx;
-      this.cy = cy;
-      this.radius = radius;
-      this.currentOpacity = 1.0;
-      this.targetOpacity = 1.0;
-      this.currentScale = 1.0;
-      this.targetScale = 1.0;
-      this.glowIntensity = 0.0;
-    }
-
-    update() {
-      const dx = hexMouse.x - this.cx;
-      const dy = hexMouse.y - this.cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (hexMouse.isActive && dist < HEX_CONFIG.mouseRadius) {
-        const normDist = dist / HEX_CONFIG.mouseRadius;
-        const factor = Math.pow(normDist, 1.35);
-
-        if (HEX_CONFIG.revealMode === 'opacity' || HEX_CONFIG.revealMode === 'both') {
-          this.targetOpacity = Math.max(0, factor);
-        } else {
-          this.targetOpacity = 1.0;
-        }
-
-        if (HEX_CONFIG.revealMode === 'scale' || HEX_CONFIG.revealMode === 'both') {
-          this.targetScale = 0.2 + (0.8 * factor);
-        } else {
-          this.targetScale = 1.0;
-        }
-
-        this.glowIntensity = (1.0 - normDist) * HEX_CONFIG.activeGlowAlpha;
-      } else {
-        this.targetOpacity = 1.0;
-        this.targetScale = 1.0;
-        this.glowIntensity = 0.0;
-      }
-
-      this.currentOpacity += (this.targetOpacity - this.currentOpacity) * HEX_CONFIG.lerpSpeed;
-      this.currentScale += (this.targetScale - this.currentScale) * HEX_CONFIG.lerpSpeed;
-    }
-
-    draw(context) {
-      if (this.currentOpacity < 0.005 && this.currentScale < 0.25) return;
-
-      const drawRadius = (this.radius * this.currentScale) + (this.currentScale >= 0.98 ? 0.65 : 0);
-
-      context.beginPath();
-      for (let i = 0; i < 6; i++) {
-        const angle = (Math.PI / 6) + (i * Math.PI / 3);
-        const vx = this.cx + drawRadius * Math.cos(angle);
-        const vy = this.cy + drawRadius * Math.sin(angle);
-        if (i === 0) context.moveTo(vx, vy);
-        else context.lineTo(vx, vy);
-      }
-      context.closePath();
-
-      if (this.currentOpacity > 0.005) {
-        context.save();
-        context.globalAlpha = Math.min(1.0, Math.max(0, this.currentOpacity));
-        context.fillStyle = HEX_CONFIG.hexFillColor;
-        context.fill();
-        context.restore();
-      }
-
-      context.save();
-      if (this.glowIntensity > 0.05) {
-        context.strokeStyle = HEX_CONFIG.activeGlowColor;
-        context.globalAlpha = Math.min(1.0, this.glowIntensity + 0.15);
-        context.lineWidth = HEX_CONFIG.hexStrokeWidth * 1.5;
-      } else {
-        context.strokeStyle = HEX_CONFIG.hexStrokeColor;
-        context.globalAlpha = Math.min(1.0, this.currentOpacity * HEX_CONFIG.hexStrokeAlpha);
-        context.lineWidth = HEX_CONFIG.hexStrokeWidth;
-      }
-      context.stroke();
-      context.restore();
-    }
-  }
-
-  function buildHeroHexGrid() {
-    hexList = [];
-    const R = HEX_CONFIG.hexRadius;
-    const horizSpacing = Math.sqrt(3) * R;
-    const vertSpacing = 1.5 * R;
-
-    const cols = Math.ceil(heroW / horizSpacing) + 2;
-    const rows = Math.ceil(heroH / vertSpacing) + 2;
-
-    for (let r = -1; r < rows; r++) {
-      const rowOffsetY = r * vertSpacing;
-      const isOddRow = (Math.abs(r) % 2 === 1);
-      const rowOffsetX = isOddRow ? (horizSpacing / 2) : 0;
-
-      for (let c = -1; c < cols; c++) {
-        const colX = (c * horizSpacing) + rowOffsetX;
-        hexList.push(new HexagonItem(colX, rowOffsetY, R));
-      }
-    }
-  }
-
-  function resizeHeroHexCanvas() {
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = heroEl.getBoundingClientRect();
-    heroW = rect.width;
-    heroH = rect.height;
-
-    hexDpr = window.devicePixelRatio || 1;
-    hexCanvas.width = heroW * hexDpr;
-    hexCanvas.height = heroH * hexDpr;
-    hexCanvas.style.width = `${heroW}px`;
-    hexCanvas.style.height = `${heroH}px`;
-
-    hexCtx.setTransform(1, 0, 0, 1, 0, 0);
-    hexCtx.scale(hexDpr, hexDpr);
-
-    buildHeroHexGrid();
-  }
-
-  window.addEventListener('resize', resizeHeroHexCanvas);
-
-  function handleHexPointer(clientX, clientY) {
-    const rect = heroEl.getBoundingClientRect();
-    if (clientY < rect.top || clientY > rect.bottom || clientX < rect.left || clientX > rect.right) {
-      hexMouse.isActive = false;
-      hexMouse.targetX = -9999;
-      hexMouse.targetY = -9999;
-      return;
+    const w = Math.max(1, Math.round(rect.width * dpr));
+    const h = Math.max(1, Math.round(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
     }
-    hexMouse.targetX = clientX - rect.left;
-    hexMouse.targetY = clientY - rect.top;
-    hexMouse.isActive = true;
   }
 
-  window.addEventListener('mousemove', (e) => {
-    handleHexPointer(e.clientX, e.clientY);
-  });
+  function draw(now) {
+    raf = 0;
+    const dt = last ? Math.min((now - last) / 1000, 0.05) : 0.016;
+    last = now;
+    resize();
 
-  window.addEventListener('touchstart', (e) => {
-    if (e.touches.length > 0) handleHexPointer(e.touches[0].clientX, e.touches[0].clientY);
-  }, { passive: true });
+    if (!settings.paused) {
+      time += dt;
+      scan = (scan + dt * settings.scanSpeed) % (Math.max(settings.lineSpacing, 1) * 240);
+    }
 
+    if (introStart < 0) introStart = now;
+    const intro = Math.min(1, (now - introStart) / INTRO_MS);
+    let swap = 1;
+    if (swapStart >= 0) {
+      swap = Math.min(1, (now - swapStart) / REBLOOM_MS);
+      if (swap >= 1) {
+        swapStart = -1;
+      }
+    }
+
+    presence += ((pointer.inside ? 1 : 0) - presence) * (1 - Math.exp(-dt / 0.18));
+    pointer.speed *= Math.exp(-dt / 0.12);
+    const tearTarget = Math.min(1, settings.glitch * 0.25 + pointer.speed / 2600);
+    tear += (tearTarget - tear) * (1 - Math.exp(-dt / 0.08));
+
+    const dpr = canvas.width / Math.max(1, heroEl.clientWidth);
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texA);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, texB);
+
+    gl.uniform4f(loc.scene, canvas.width, canvas.height, time, dpr);
+    gl.uniform4f(loc.pointer, pointer.x * dpr, (heroEl.clientHeight - pointer.y) * dpr, presence, tear);
+    gl.uniform4f(loc.print, settings.lineSpacing, settings.mode, settings.dotSize, settings.sway);
+    gl.uniform4f(loc.fx, settings.lensRadius, ease(swap), ease(intro), scan);
+    gl.uniform4f(loc.frame, aspectA, aspectB, settings.frameInset, 14);
+    gl.uniform4f(loc.post, settings.grain, settings.vignette, 0, 0);
+    gl.uniform3fv(loc.ink, hexToRgb(settings.ink));
+    gl.uniform3fv(loc.hot, hexToRgb(settings.highlight));
+    gl.uniform3fv(loc.bg, hexToRgb(settings.background));
+    gl.uniform3fv(loc.frameColor, hexToRgb(settings.ink));
+
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    const settling =
+      intro < 1 || swapStart >= 0 || Math.abs((pointer.inside ? 1 : 0) - presence) > 0.002 || Math.abs(tear - tearTarget) > 0.002;
+    if ((!settings.paused || settling) && !document.hidden) {
+      raf = requestAnimationFrame(draw);
+    }
+  }
+
+  function kick() {
+    if (!raf && !document.hidden) raf = requestAnimationFrame(draw);
+  }
+
+  function triggerBloom() {
+    if (swapStart >= 0) return;
+    swapStart = performance.now();
+    kick();
+  }
+
+  if (rebloomBtn) {
+    rebloomBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerBloom();
+    });
+  }
+
+  // Pointer interactions on Hero section
+  function onMove(clientX, clientY) {
+    const r = heroEl.getBoundingClientRect();
+    pointer.inside = clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    pointer.x = clientX - r.left;
+    pointer.y = clientY - r.top;
+    const now = performance.now();
+    if (pointer.lastT && now > pointer.lastT) {
+      const v = Math.hypot(clientX - pointer.lastX, clientY - pointer.lastY) / ((now - pointer.lastT) / 1000);
+      if (pointer.inside) pointer.speed = Math.max(pointer.speed, Math.min(v, 6000));
+    }
+    pointer.lastX = clientX;
+    pointer.lastY = clientY;
+    pointer.lastT = now;
+    kick();
+  }
+
+  window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY), { passive: true });
   window.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) handleHexPointer(e.touches[0].clientX, e.touches[0].clientY);
+    if (e.touches && e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
   }, { passive: true });
-
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches.length > 0) onMove(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
   window.addEventListener('touchend', () => {
-    hexMouse.isActive = false;
-    hexMouse.targetX = -9999;
-    hexMouse.targetY = -9999;
+    pointer.inside = false;
+    kick();
   });
-
   document.addEventListener('mouseleave', () => {
-    hexMouse.isActive = false;
-    hexMouse.targetX = -9999;
-    hexMouse.targetY = -9999;
+    pointer.inside = false;
+    kick();
   });
 
-  function animateHeroHexagons() {
-    hexMouse.x += (hexMouse.targetX - hexMouse.x) * 0.22;
-    hexMouse.y += (hexMouse.targetY - hexMouse.y) * 0.22;
-
-    hexCtx.clearRect(0, 0, heroW, heroH);
-
-    for (let i = 0; i < hexList.length; i++) {
-      hexList[i].update();
-      hexList[i].draw(hexCtx);
-    }
-
-    requestAnimationFrame(animateHeroHexagons);
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    resizeHeroHexCanvas();
-    animateHeroHexagons();
+  heroEl.addEventListener('click', (e) => {
+    if (e.target.closest('a, button, input, select, textarea, label, [data-no-bloom]')) return;
+    triggerBloom();
   });
+
+  window.addEventListener('resize', () => {
+    resize();
+    kick();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) kick();
+  });
+
+  // Initial draw
+  resize();
+  kick();
+})();
 </script>
 
 <!-- ========================================================================= -->

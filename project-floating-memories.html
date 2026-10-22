@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Floating Memories: fotoğrafları fizik tabanlı yapbozlara dönüştüren, kişisel sürprizleri paylaşılabilir dijital hediyeler olarak sunan Flutter uygulaması." />
+  <title>Floating Memories | Proje Detayı - Ahmet Koyuncu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] },
+        colors: { dark: { 950: '#060709', 900: '#0c0e14', 850: '#11141d' } }
+      } }
+    };
+  </script>
+  <style>
+    .fm-page { background: #fff7f8; color: #432c34; }
+    .fm-page .glass-card { background: rgba(255,255,255,.88); backdrop-filter: blur(16px); border-color: #f2d3da; box-shadow: 0 18px 50px rgba(190,24,93,.06); }
+    .fm-page [class*="bg-dark-950"] { background-color: #fff0f3 !important; }
+    .fm-page [class*="text-white"] { color: #35202a !important; }
+    .fm-page [class*="text-slate-300"] { color: #5b414a !important; }
+    .fm-page [class*="text-slate-400"] { color: #795f68 !important; }
+    .fm-page [class*="text-slate-500"] { color: #927982 !important; }
+    .fm-page [class*="border-white/"] { border-color: #f1d8dd !important; }
+    .fm-page header { background: rgba(255,247,248,.88); border-color: #f0d9de; }
+    .text-gradient { background: linear-gradient(120deg,#fff 15%,#e879f9 55%,#22d3ee); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .fm-page .text-gradient { background: linear-gradient(120deg,#451b2b 5%,#db2777 55%,#0891b2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .piece { animation: float 3s ease-in-out infinite; }
+    .piece:nth-child(2n) { animation-delay: -1.4s; }
+    .piece:nth-child(3n) { animation-delay: -.7s; }
+    @keyframes float { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+  </style>
+</head>
+<body class="fm-page bg-[#fff7f8] text-slate-700 font-sans antialiased min-h-screen selection:bg-fuchsia-500/20 selection:text-fuchsia-200">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-dark-950/80 backdrop-blur-xl">
+    <div class="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
+      <a href="index.html#projects" class="glass-card group flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-mono text-slate-300 transition hover:border-fuchsia-400/50 hover:text-white">
+        <i data-lucide="arrow-left" class="h-4 w-4 text-fuchsia-400 transition group-hover:-translate-x-1"></i><span>Portfolyoya Dön</span>
+      </a>
+      <span class="flex items-center gap-2 text-xs font-mono text-slate-400"><span class="h-2 w-2 rounded-full bg-fuchsia-400"></span>Flutter • Flame • Forge2D</span>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-32">
+    <section class="mb-10 grid items-center gap-10 md:grid-cols-[1.15fr_.85fr]">
+      <div>
+        <div class="mb-4 inline-flex items-center gap-2 rounded-lg border border-fuchsia-500/30 bg-fuchsia-500/10 px-3 py-1 text-xs font-mono text-fuchsia-200"><i data-lucide="heart-handshake" class="h-3.5 w-3.5"></i>Mobil uygulama • Etkileşimli dijital hediye</div>
+        <h1 class="mb-4 text-5xl font-extrabold tracking-tight text-gradient sm:text-6xl">Floating Memories</h1>
+        <p class="max-w-2xl text-lg leading-relaxed text-slate-300">Bir fotoğrafı ve kişisel bir mesajı, sevdiklerine gönderebileceğin etkileşimli bir yapboz sürprizine dönüştür. Alıcı parçaları birleştirerek anıyı ve gizli mesajı açar.</p>
+        <div class="mt-6 flex flex-wrap gap-2"><span class="rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-3 py-1.5 text-xs font-mono text-cyan-200">Flutter / Dart</span><span class="rounded-lg border border-fuchsia-500/20 bg-fuchsia-500/5 px-3 py-1.5 text-xs font-mono text-fuchsia-200">Flame</span><span class="rounded-lg border border-indigo-500/20 bg-indigo-500/5 px-3 py-1.5 text-xs font-mono text-indigo-200">Forge2D</span><span class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-mono text-slate-300">Riverpod</span></div>
+      </div>
+      <div class="glass-card relative overflow-hidden rounded-3xl border-fuchsia-500/20 p-6 sm:p-8">
+        <div class="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-fuchsia-500/10 blur-3xl"></div>
+        <div class="relative mb-5 flex items-center justify-between text-[10px] font-mono"><span class="text-fuchsia-200">ANINI HEDİYEYE DÖNÜŞTÜR</span><span class="text-cyan-200">PUZZLE // 3×3</span></div>
+        <div class="relative mx-auto grid max-w-[250px] grid-cols-3 gap-2" aria-label="Süzülen yapboz parçaları">
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-fuchsia-300/40 bg-gradient-to-br from-fuchsia-400/30 to-indigo-500/20 text-2xl text-fuchsia-100">✦</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-cyan-300/40 bg-gradient-to-br from-cyan-400/25 to-blue-500/20 text-2xl text-cyan-100">♡</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-indigo-300/40 bg-gradient-to-br from-indigo-400/30 to-fuchsia-500/20 text-2xl text-indigo-100">✧</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-cyan-300/40 bg-gradient-to-br from-blue-400/20 to-fuchsia-500/25 text-2xl text-cyan-100">✧</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-300/40 to-pink-500/25 text-2xl text-white">?</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-indigo-300/40 bg-gradient-to-br from-indigo-400/30 to-cyan-500/20 text-2xl text-indigo-100">♡</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-fuchsia-300/40 bg-gradient-to-br from-pink-400/25 to-indigo-500/25 text-2xl text-fuchsia-100">✦</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-cyan-300/40 bg-gradient-to-br from-cyan-400/25 to-indigo-500/25 text-2xl text-cyan-100">✧</div>
+          <div class="piece flex aspect-square items-center justify-center rounded-2xl border border-pink-300/40 bg-gradient-to-br from-pink-400/25 to-fuchsia-500/20 text-2xl text-pink-100">♡</div>
+        </div>
+        <div class="relative mt-5 flex items-center justify-center gap-2 text-xs text-slate-400"><i data-lucide="move" class="h-3.5 w-3.5 text-fuchsia-300"></i>Parçaları sürükle, sürprizi keşfet</div>
+      </div>
+    </section>
+
+    <section class="mb-10 grid gap-4 md:grid-cols-3">
+      <article class="glass-card rounded-2xl p-5"><span class="mb-3 inline-flex rounded-xl bg-fuchsia-500/10 p-2.5 text-fuchsia-300"><i data-lucide="image-plus" class="h-5 w-5"></i></span><h2 class="mb-2 font-bold text-white">1. Anını seç</h2><p class="text-sm leading-relaxed text-slate-400">Galerinden fotoğraf ekle, kırp, yapboz biçimini ve zorluk seviyesini belirle. İstersen birden fazla fotoğraf katmanı oluştur.</p></article>
+      <article class="glass-card rounded-2xl p-5"><span class="mb-3 inline-flex rounded-xl bg-cyan-500/10 p-2.5 text-cyan-300"><i data-lucide="wand-sparkles" class="h-5 w-5"></i></span><h2 class="mb-2 font-bold text-white">2. Mesajını ekle</h2><p class="text-sm leading-relaxed text-slate-400">Kısa bir not yaz. Yapboz tamamlanana kadar sürpriz mesajı alıcı için gizli kalır.</p></article>
+      <article class="glass-card rounded-2xl p-5"><span class="mb-3 inline-flex rounded-xl bg-indigo-500/10 p-2.5 text-indigo-300"><i data-lucide="send" class="h-5 w-5"></i></span><h2 class="mb-2 font-bold text-white">3. Paylaş</h2><p class="text-sm leading-relaxed text-slate-400">Uygulama tekil oyun bağlantısı üretir. Bağlantıyı mesajlaşma uygulamasıyla gönder; alıcı yapbozu oynayıp anıyı açsın.</p></article>
+    </section>
+
+    <section class="glass-card mb-10 rounded-2xl p-5 sm:p-7">
+      <div class="mb-5 flex items-end justify-between gap-4">
+        <div><div class="mb-2 font-mono text-xs text-fuchsia-300">GERÇEK UYGULAMA EKRANLARI</div><h2 class="text-xl font-bold text-white">Floating Memories içinden</h2></div>
+        <span class="hidden text-xs text-slate-500 sm:block">Atölye • Vitrin • Oyun • Kasa • Harita</span>
+      </div>
+      <div class="flex snap-x gap-4 overflow-x-auto pb-3">
+        <figure class="w-[150px] shrink-0 snap-start sm:w-[170px]"><div class="flex h-[520px] items-center justify-center overflow-hidden rounded-[26px] border border-rose-200/20 bg-[#fff7f8] p-2 shadow-lg"><img src="assets/floating-memories/creator.png" alt="Floating Memories fotoğraf yapbozu hazırlama atölyesi" class="max-h-full max-w-full rounded-[19px] object-contain" loading="lazy"></div><figcaption class="mt-3 text-center text-xs font-medium text-slate-300">Sürpriz Atölyesi</figcaption></figure>
+        <figure class="w-[150px] shrink-0 snap-start sm:w-[170px]"><div class="flex h-[520px] items-center justify-center overflow-hidden rounded-[26px] border border-rose-200/20 bg-[#fff7f8] p-2 shadow-lg"><img src="assets/floating-memories/home.png" alt="Floating Memories ana ekranında ortak anılar ve sürpriz portalı" class="max-h-full max-w-full rounded-[19px] object-contain" loading="lazy"></div><figcaption class="mt-3 text-center text-xs font-medium text-slate-300">Vitrin ve anı akışı</figcaption></figure>
+        <figure class="w-[150px] shrink-0 snap-start sm:w-[170px]"><div class="flex h-[520px] items-center justify-center overflow-hidden rounded-[26px] border border-rose-200/20 bg-[#fff7f8] p-2 shadow-lg"><img src="assets/floating-memories/puzzle-game.png" alt="Floating Memories gerçek zamanlı yapboz oyun ekranı" class="max-h-full max-w-full rounded-[19px] object-contain" loading="lazy"></div><figcaption class="mt-3 text-center text-xs font-medium text-slate-300">Yerçekimsiz yapboz</figcaption></figure>
+        <figure class="w-[150px] shrink-0 snap-start sm:w-[170px]"><div class="flex h-[520px] items-center justify-center overflow-hidden rounded-[26px] border border-rose-200/20 bg-[#fff7f8] p-2 shadow-lg"><img src="assets/floating-memories/vault.png" alt="Floating Memories yerel anı kasası" class="max-h-full max-w-full rounded-[19px] object-contain" loading="lazy"></div><figcaption class="mt-3 text-center text-xs font-medium text-slate-300">Kişisel anı kasası</figcaption></figure>
+        <figure class="w-[150px] shrink-0 snap-start sm:w-[170px]"><div class="flex h-[520px] items-center justify-center overflow-hidden rounded-[26px] border border-rose-200/20 bg-[#fff7f8] p-2 shadow-lg"><img src="assets/floating-memories/map.png" alt="Floating Memories ortak anıları harita üzerinde gösteren ekran" class="max-h-full max-w-full rounded-[19px] object-contain" loading="lazy"></div><figcaption class="mt-3 text-center text-xs font-medium text-slate-300">Anı haritası</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="mb-10 grid gap-4 md:grid-cols-3">
+      <article class="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5"><h2 class="mb-2 flex items-center gap-2 font-semibold text-white"><i data-lucide="archive" class="h-4 w-4 text-cyan-300"></i>Anı kasası</h2><p class="text-sm leading-relaxed text-slate-400">Alınan sürprizleri cihazda sakla ve daha sonra yeniden aç.</p></article>
+      <article class="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5"><h2 class="mb-2 flex items-center gap-2 font-semibold text-white"><i data-lucide="calendar-heart" class="h-4 w-4 text-fuchsia-300"></i>Anı takvimi ve zaman kapsülü</h2><p class="text-sm leading-relaxed text-slate-400">Özel günleri takip et, anıları tarihleriyle ilişkilendir ve geleceğe not bırak.</p></article>
+      <article class="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5"><h2 class="mb-2 flex items-center gap-2 font-semibold text-white"><i data-lucide="shapes" class="h-4 w-4 text-indigo-300"></i>Mini oyunlar</h2><p class="text-sm leading-relaxed text-slate-400">Ana yapboz deneyiminin yanında hafıza, quiz ve bahçe simülasyonu gibi anı temalı ekranlar içerir.</p></article>
+    </section>
+
+    <section class="glass-card mb-10 rounded-2xl p-6 sm:p-8">
+      <div class="mb-6 flex items-center gap-3"><span class="font-mono text-fuchsia-300">01.</span><h2 class="text-xl font-bold text-white">Uygulama nasıl çalışıyor?</h2></div>
+      <div class="grid gap-6 md:grid-cols-2">
+        <div><h3 class="mb-2 flex items-center gap-2 font-semibold text-fuchsia-200"><i data-lucide="gamepad-2" class="h-4 w-4"></i>Fizik tabanlı yapboz</h3><p class="text-sm leading-relaxed text-slate-400">Oyun alanı Flame ve Forge2D ile kurulmuş. Parçalar ekranda süzülür; oyuncu onları sürükleyerek merkezdeki yuvalara bırakır. Parça ızgaraya oturduğunda ilerleme sayılır ve tüm parçalar yerleşince anı açılır.</p></div>
+        <div><h3 class="mb-2 flex items-center gap-2 font-semibold text-cyan-200"><i data-lucide="link-2" class="h-4 w-4"></i>Bağlantıyla açılan sürpriz</h3><p class="text-sm leading-relaxed text-slate-400">Her yapboz bir kimlik alır ve paylaşılabilir deep link'e bağlanır. Uygulama açılırken gelen bağlantı yönlendirilir; alıcı ilgili sürpriz ekranına gider. Tamamlanan anılar yerel kasaya kaydedilebilir.</p></div>
+      </div>
+    </section>
+
+    <section class="glass-card rounded-2xl p-6 sm:p-8">
+      <div class="mb-6 flex items-center gap-3"><span class="font-mono text-fuchsia-300">02.</span><h2 class="text-xl font-bold text-white">Flutter projesinin kod yapısı</h2></div>
+      <p class="mb-5 text-sm leading-relaxed text-slate-400"><code class="rounded bg-white/5 px-1.5 py-0.5 text-fuchsia-200">floating_memories</code>, uygulamanın proje klasörünün adıdır. Başlangıç ve ekran yönlendirmesi <code class="text-slate-200">lib/app.dart</code> içinde; fotoğraf seçimi, kırpma ve hediye hazırlama akışı Creator ekranında bulunur. Oyun fiziği ayrı bir Flame oyun sınıfında tutulur.</p>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="rounded-xl border border-white/[0.06] bg-dark-950/70 p-4"><code class="text-xs font-mono text-cyan-200">lib/presentation/screens/creator/</code><p class="mt-2 text-xs leading-relaxed text-slate-400">Fotoğraf seçme, kırpma, yapboz ayarları, kişisel mesaj ve paylaşım arayüzü.</p></div>
+        <div class="rounded-xl border border-white/[0.06] bg-dark-950/70 p-4"><code class="text-xs font-mono text-fuchsia-200">lib/game/floating_memories_game.dart</code><p class="mt-2 text-xs leading-relaxed text-slate-400">Forge2D dünyası, süzülen parçalar, sürükleme ve yapbozun tamamlanma mantığı.</p></div>
+        <div class="rounded-xl border border-white/[0.06] bg-dark-950/70 p-4"><code class="text-xs font-mono text-indigo-200">lib/presentation/screens/player/</code><p class="mt-2 text-xs leading-relaxed text-slate-400">Paylaşılan sürprizi açan alıcının karşılama ve oyun ekranları.</p></div>
+        <div class="rounded-xl border border-white/[0.06] bg-dark-950/70 p-4"><code class="text-xs font-mono text-emerald-200">lib/services/</code><p class="mt-2 text-xs leading-relaxed text-slate-400">Deep link, yerel anı kasası, görsel parçalama, ses ve abonelik servisleri.</p></div>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-2 border-t border-white/[0.06] pt-5 text-[11px] font-mono text-slate-400"><span class="rounded bg-white/5 px-2.5 py-1">Riverpod • durum yönetimi</span><span class="rounded bg-white/5 px-2.5 py-1">GoRouter • ekran yönlendirme</span><span class="rounded bg-white/5 px-2.5 py-1">Hive • yerel veri</span><span class="rounded bg-white/5 px-2.5 py-1">app_links • deep link</span></div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/[0.06] px-6 py-8 text-center text-xs text-slate-500">Floating Memories • Flutter ile geliştirildi</footer>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

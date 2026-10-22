@@ -1,0 +1,140 @@
+/* Opt-in light theme overrides. The existing dark theme remains untouched. */
+html.light-theme body.site-theme {
+  background: #f4f6f7 !important;
+  color: #24343b !important;
+  color-scheme: light;
+  --light-surface: #ffffff;
+  --light-surface-soft: #edf2f3;
+  --light-border: #d7e0e3;
+  --light-text: #203038;
+  --light-muted: #52636b;
+  --light-accent: #287e77;
+}
+
+html.light-theme body.site-theme header {
+  background: rgba(255, 255, 255, .94) !important;
+  border-color: #dce4e6 !important;
+  color: var(--light-text) !important;
+}
+
+html.light-theme body.site-theme .glass-card,
+html.light-theme body.site-theme [class*="bg-dark-900"],
+html.light-theme body.site-theme [class*="bg-dark-950"],
+html.light-theme body.site-theme [class*="bg-slate-900"] {
+  background-color: var(--light-surface) !important;
+  border-color: var(--light-border) !important;
+  box-shadow: 0 8px 24px rgba(31, 56, 65, .07) !important;
+}
+html.light-theme body.site-theme [class*="bg-dark-950/"],
+html.light-theme body.site-theme [class*="bg-dark-900/"],
+html.light-theme body.site-theme [class*="bg-slate-900/"] { background-color: rgba(255, 255, 255, .86) !important; }
+
+html.light-theme body.site-theme [class*="text-white"] { color: var(--light-text) !important; }
+html.light-theme body.site-theme [class*="text-slate-300"] { color: #354951 !important; }
+html.light-theme body.site-theme [class*="text-slate-400"] { color: var(--light-muted) !important; }
+html.light-theme body.site-theme [class*="text-slate-500"] { color: #71828a !important; }
+html.light-theme body.site-theme [class*="text-cyan-"],
+html.light-theme body.site-theme [class*="text-amber-"],
+html.light-theme body.site-theme [class*="text-emerald-"],
+html.light-theme body.site-theme [class*="text-purple-"],
+html.light-theme body.site-theme [class*="text-indigo-"],
+html.light-theme body.site-theme [class*="text-fuchsia-"],
+html.light-theme body.site-theme [class*="text-blue-"],
+html.light-theme body.site-theme [class*="text-rose-"] { color: var(--light-accent) !important; }
+
+html.light-theme body.site-theme [class*="border-white/"],
+html.light-theme body.site-theme [class*="border-cyan-"],
+html.light-theme body.site-theme [class*="border-amber-"],
+html.light-theme body.site-theme [class*="border-emerald-"],
+html.light-theme body.site-theme [class*="border-purple-"],
+html.light-theme body.site-theme [class*="border-indigo-"],
+html.light-theme body.site-theme [class*="border-fuchsia-"],
+html.light-theme body.site-theme [class*="border-blue-"],
+html.light-theme body.site-theme [class*="border-rose-"] { border-color: var(--light-border) !important; }
+
+html.light-theme body.site-theme #projects [class*="bg-cyan-"],
+html.light-theme body.site-theme #projects [class*="bg-amber-"],
+html.light-theme body.site-theme #projects [class*="bg-emerald-"],
+html.light-theme body.site-theme #projects [class*="bg-purple-"],
+html.light-theme body.site-theme #projects [class*="bg-indigo-"],
+html.light-theme body.site-theme #projects [class*="bg-fuchsia-"],
+html.light-theme body.site-theme #projects [class*="bg-blue-"],
+html.light-theme body.site-theme #projects [class*="bg-rose-"] { background-color: #edf5f4 !important; }
+
+html.light-theme body.site-theme a[class*="bg-gradient-to-r"],
+html.light-theme body.site-theme button[class*="bg-gradient-to-r"],
+html.light-theme body.site-theme a[class*="bg-cyan-400"],
+html.light-theme body.site-theme button[class*="bg-cyan-400"],
+html.light-theme body.site-theme button[class*="bg-emerald-500"] {
+  background: #287e77 !important;
+  border-color: #287e77 !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 16px rgba(40, 126, 119, .15) !important;
+}
+
+html.light-theme body.site-theme a[class*="bg-gradient-to-r"]:hover,
+html.light-theme body.site-theme button[class*="bg-gradient-to-r"]:hover,
+html.light-theme body.site-theme a[class*="bg-cyan-400"]:hover,
+html.light-theme body.site-theme button[class*="bg-cyan-400"]:hover,
+html.light-theme body.site-theme button[class*="bg-emerald-500"]:hover { background: #216c66 !important; }
+
+html.light-theme body.site-theme a[class*="glass-card"],
+html.light-theme body.site-theme button[class*="glass-card"],
+html.light-theme body.site-theme a[class*="bg-dark-900"],
+html.light-theme body.site-theme button[class*="bg-dark-900"] {
+  background: var(--light-surface) !important;
+  border-color: var(--light-border) !important;
+  color: var(--light-text) !important;
+}
+
+html.light-theme body.site-theme a[class*="glass-card"]:hover,
+html.light-theme body.site-theme button[class*="glass-card"]:hover,
+html.light-theme body.site-theme a[class*="bg-dark-900"]:hover,
+html.light-theme body.site-theme button[class*="bg-dark-900"]:hover {
+  background: var(--light-surface-soft) !important;
+  border-color: #9bc9c4 !important;
+}
+
+html.light-theme body.site-theme input,
+html.light-theme body.site-theme textarea,
+html.light-theme body.site-theme select {
+  background-color: #ffffff !important;
+  border-color: var(--light-border) !important;
+  color: var(--light-text) !important;
+}
+
+html.light-theme body.site-theme .text-gradient {
+  background: linear-gradient(120deg, #24343b 10%, #287e77 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.light-theme body.site-theme ::selection { color: #153b38; background: rgba(40, 126, 119, .18); }
+
+.site-theme-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  min-height: 2.25rem;
+  padding: .4rem .65rem;
+  border: 1px solid rgba(148, 163, 184, .3);
+  border-radius: .75rem;
+  background: rgba(15, 23, 32, .72);
+  color: #e2e8f0;
+  font: 500 .75rem/1 Inter, sans-serif;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.site-theme-toggle:hover { border-color: #78c9c0; background: rgba(120, 201, 192, .12); }
+.site-theme-toggle svg { width: 1rem; height: 1rem; }
+.site-theme-toggle .label-en { display: none; }
+html[lang="en"] .site-theme-toggle .label-tr { display: none; }
+@media (min-width: 640px) {
+  .site-theme-toggle .label-tr, .site-theme-toggle .label-en { display: inline; }
+  html[lang="en"] .site-theme-toggle .label-tr { display: none; }
+  html[lang="en"] .site-theme-toggle .label-en { display: inline; }
+}
+html.light-theme .site-theme-toggle { background: #fff; border-color: #d2dfe2; color: #25373d; }
+html.light-theme .site-theme-toggle:hover { background: #edf5f4; border-color: #82bdb6; }

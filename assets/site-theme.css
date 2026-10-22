@@ -257,6 +257,8 @@ html.light-theme body.site-theme #main-nav [aria-label="LinkedIn"]:hover {
   color: #c2410c !important;
 }
 html.light-theme body.site-theme #main-nav nav a {
+  padding: .55rem .8rem !important;
+  border-radius: 9999px !important;
   background: #fff !important;
   background-image: none !important;
   border-color: transparent !important;
@@ -289,6 +291,7 @@ html.light-theme body.site-theme #main-nav > div > a > div:first-child {
   border-color: #fed7aa !important;
 }
 html.light-theme body.site-theme #main-nav button:not(.site-theme-toggle) {
+  border-radius: 9999px !important;
   background: #fff !important;
   border-color: #cbd5e1 !important;
   color: #334155 !important;

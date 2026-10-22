@@ -1,4 +1,51 @@
-/* Local mobile layout fallback when the Tailwind CDN is unavailable. */
+/* Local layout fallback when the Tailwind CDN is unavailable. */
+body.site-theme {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #060709;
+  color: #cbd5e1;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+#threejs-background-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#main-nav { position: fixed; inset: 0 0 auto; z-index: 50; }
+main { position: relative; z-index: 10; }
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#hero > div.relative {
+  position: relative;
+  z-index: 20;
+  width: min(100% - 40px, 900px);
+  margin: 0 auto;
+  color: #cbd5e1;
+  text-align: center;
+  visibility: visible;
+  opacity: 1;
+}
+#hero h1, #hero h1 span, #hero h1 [data-i18n] { color: #f8fafc; }
+#hero h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); line-height: 1.1; font-weight: 800; }
+#hero > div.relative > p { color: #cbd5e1; }
+#hero a { color: #f8fafc; }
+@media (min-width: 768px) {
+  #hero > div.relative > div:nth-of-type(3) { display: flex; flex-direction: row; justify-content: center; }
+  #hero a[href="#projects"], #hero a[href="#contact"] {
+    width: auto; min-height: 48px; padding: 12px 24px; border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  #hero a[href="#projects"] { background: #22d3ee; color: #061018; }
+  #hero a[href="#contact"] { border: 1px solid rgba(255,255,255,.2); background: rgba(17,20,29,.8); }
+}
 @media (max-width: 767px), (hover: none) {
   html { scroll-behavior: smooth; }
   body.site-theme {

@@ -11,6 +11,88 @@ html.light-theme body.site-theme {
   --light-accent: #287e77;
 }
 
+/* Light theme must also override the local CDN fallback's fixed dark colors. */
+html.light-theme body.site-theme main,
+html.light-theme body.site-theme main > section,
+html.light-theme body.site-theme #hero {
+  background-color: #f4f6f7 !important;
+  color: #24343b !important;
+}
+html.light-theme body.site-theme #main-nav {
+  background: rgba(255,255,255,.96) !important;
+  border-color: #dce4e6 !important;
+}
+html.light-theme body.site-theme #main-nav > div > a > div:first-child {
+  color: #287e77 !important;
+  background: #e8f3f1 !important;
+  border-color: #c5dfdb !important;
+}
+html.light-theme body.site-theme #main-nav > div > a span:first-child,
+html.light-theme body.site-theme #main-nav > div > a span:last-child,
+html.light-theme body.site-theme #hero h1,
+html.light-theme body.site-theme #hero h1 span,
+html.light-theme body.site-theme #hero [data-i18n="hero_role_1"],
+html.light-theme body.site-theme #hero [data-i18n="hero_role_2"],
+html.light-theme body.site-theme #hero p,
+html.light-theme body.site-theme #hero > div.relative > div:nth-of-type(4) > div,
+html.light-theme body.site-theme #hero > div.relative > div:nth-of-type(4) > div > div:last-child,
+html.light-theme body.site-theme main h2,
+html.light-theme body.site-theme main h3,
+html.light-theme body.site-theme main h4,
+html.light-theme body.site-theme main h5,
+html.light-theme body.site-theme main p,
+html.light-theme body.site-theme main strong,
+html.light-theme body.site-theme main label {
+  color: var(--light-text) !important;
+  text-shadow: none !important;
+}
+html.light-theme body.site-theme #hero h1 .text-gradient-cyan,
+html.light-theme body.site-theme #hero [class*="text-transparent"] {
+  background: none !important;
+  -webkit-text-fill-color: var(--light-accent) !important;
+  color: var(--light-accent) !important;
+}
+html.light-theme body.site-theme .glass-card,
+html.light-theme body.site-theme main [class*="bg-slate-900"],
+html.light-theme body.site-theme main [class*="bg-dark-"] {
+  background-color: #fff !important;
+  color: var(--light-text) !important;
+  border-color: var(--light-border) !important;
+}
+html.light-theme body.site-theme main [class*="text-white"],
+html.light-theme body.site-theme main [class*="text-slate-300"],
+html.light-theme body.site-theme main [class*="text-slate-400"],
+html.light-theme body.site-theme main [class*="text-slate-500"] {
+  color: var(--light-text) !important;
+}
+html.light-theme body.site-theme main [class*="text-cyan-"],
+html.light-theme body.site-theme main [class*="text-amber-"],
+html.light-theme body.site-theme main [class*="text-emerald-"],
+html.light-theme body.site-theme main [class*="text-blue-"] {
+  color: var(--light-accent) !important;
+}
+html.light-theme body.site-theme #hero a[href="#projects"],
+html.light-theme body.site-theme #hero a[href="#contact"] {
+  background: #287e77 !important;
+  border-color: #287e77 !important;
+  color: #fff !important;
+}
+html.light-theme body.site-theme #hero > div.relative > div:first-child {
+  background: #e8f3f1 !important;
+  border-color: #c5dfdb !important;
+  color: #246d66 !important;
+}
+html.light-theme body.site-theme .site-theme-toggle {
+  background: #fff !important;
+  border-color: #d2dfe2 !important;
+  color: #25373d !important;
+}
+html.light-theme body.site-theme #main-nav button:not(.site-theme-toggle) {
+  background: #edf5f4 !important;
+  border-color: #d2dfe2 !important;
+  color: #25373d !important;
+}
+
 html.light-theme body.site-theme header {
   background: rgba(255, 255, 255, .94) !important;
   border-color: #dce4e6 !important;

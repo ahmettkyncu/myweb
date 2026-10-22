@@ -373,3 +373,19 @@ html.light-theme body.site-theme .text-gradient-glow {
   color: #c2410c !important;
   -webkit-text-fill-color: #c2410c !important;
 }
+
+.contact-social-link {
+  position: relative;
+  transform: translateY(0) scale(1);
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+.contact-social-link:hover,
+.contact-social-link:focus-visible {
+  z-index: 2;
+  transform: translateY(-4px) scale(1.12);
+  background-color: #fff7ed !important;
+  border-color: #fdba74 !important;
+  color: #c2410c !important;
+  box-shadow: 0 8px 20px rgba(194,65,12,.16);
+}
+.contact-social-link:focus-visible { outline: 2px solid #c2410c; outline-offset: 3px; }

@@ -145,8 +145,8 @@ html.light-theme body.site-theme #projects [class*="bg-rose-"] { background-colo
 
 html.light-theme body.site-theme a[class*="bg-gradient-to-r"],
 html.light-theme body.site-theme button[class*="bg-gradient-to-r"],
-html.light-theme body.site-theme a[class*="bg-cyan-400"],
-html.light-theme body.site-theme button[class*="bg-cyan-400"],
+html.light-theme body.site-theme a[class~="bg-cyan-400"],
+html.light-theme body.site-theme button[class~="bg-cyan-400"],
 html.light-theme body.site-theme button[class*="bg-emerald-500"] {
   background: #287e77 !important;
   border-color: #287e77 !important;
@@ -156,8 +156,8 @@ html.light-theme body.site-theme button[class*="bg-emerald-500"] {
 
 html.light-theme body.site-theme a[class*="bg-gradient-to-r"]:hover,
 html.light-theme body.site-theme button[class*="bg-gradient-to-r"]:hover,
-html.light-theme body.site-theme a[class*="bg-cyan-400"]:hover,
-html.light-theme body.site-theme button[class*="bg-cyan-400"]:hover,
+html.light-theme body.site-theme a[class~="bg-cyan-400"]:hover,
+html.light-theme body.site-theme button[class~="bg-cyan-400"]:hover,
 html.light-theme body.site-theme button[class*="bg-emerald-500"]:hover { background: #216c66 !important; }
 
 html.light-theme body.site-theme a[class*="glass-card"],
@@ -343,8 +343,8 @@ html.light-theme body.site-theme main [class*="text-fuchsia-"],
 html.light-theme body.site-theme main [class*="text-rose-"] {
   color: #c2410c !important;
 }
-html.light-theme body.site-theme main a[class*="bg-cyan-"],
-html.light-theme body.site-theme main button[class*="bg-cyan-"],
+html.light-theme body.site-theme main a[class~="bg-cyan-400"],
+html.light-theme body.site-theme main button[class~="bg-cyan-400"],
 html.light-theme body.site-theme main a[class*="bg-gradient-to-r"] {
   background: #c2410c !important;
   border-color: #c2410c !important;
